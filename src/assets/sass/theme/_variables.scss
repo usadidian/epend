@@ -238,7 +238,7 @@ $toggleButtonTextActiveHoverColor:$textColor;
 $toggleButtonIconActiveHoverColor:$textSecondaryColor;;
 
 //inplace
-$inplacePadding:$inputPadding;
+$inplacePendapatanding:$inputPadding;
 $inplaceHoverBg:rgba(0,0,0,.04);
 $inplaceTextHoverColor:$textColor;
 
@@ -281,7 +281,7 @@ $calendarHeaderTextColor:$textColor;
 $calendarHeaderFontWeight:500;
 $calendarHeaderCellPadding:.5rem;
 
-$calendarCellDatePadding:.5rem;
+$calendarCellDatePendapatanding:.5rem;
 $calendarCellDateWidth:2.5rem;
 $calendarCellDateHeight:2.5rem;
 $calendarCellDateBorderRadius:50%;
@@ -297,7 +297,7 @@ $calendarTimePickerElementPadding:0 .5rem;
 $calendarTimePickerTimeFontSize:1.25rem;
 
 $calendarBreakpoint:769px;
-$calendarCellDatePaddingSM:0;
+$calendarCellDatePendapatandingSM:0;
 
 //input switch
 $inputSwitchWidth:2.75rem;
@@ -506,7 +506,7 @@ $fullCalendarEventBorder:1px solid $highlightBg;
 $fullCalendarEventTextColor:$highlightTextColor;
 
 //tree
-$treeNodePadding:.25rem;
+$treeNodePendapatanding:.25rem;
 $treeNodeContentPadding:.75rem;
 $treeNodeChildrenPadding:0 0 0 1rem;
 $treeNodeIconColor:$textSecondaryColor;
@@ -516,14 +516,14 @@ $organizationChartConnectorColor:rgba(0,0,0,.12);
 
 //message
 $messageMargin:1rem 0;
-$messagePadding: 1.25rem 1.5rem;
+$messagePendapatanding: 1.25rem 1.5rem;
 $messageBorderWidth:0 0 0 0;
 $messageIconFontSize:1.5rem;
 $messageTextFontSize:1rem;
 $messageTextFontWeight:500;
 
 //inline message
-$inlineMessagePadding:$inputPadding;
+$inlineMessagePendapatanding:$inputPadding;
 $inlineMessageMargin:0;
 $inlineMessageIconFontSize:1rem;
 $inlineMessageTextFontSize:1rem;

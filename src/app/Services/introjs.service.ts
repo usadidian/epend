@@ -7,7 +7,7 @@ export class IntroJSService {
     steps: any[] = [
         {
             element: "#sidebar",
-            intro: "Selamat Datang di beranda ePad. Tour ini akan membantu anda untuk memulai ePad pertama kali. Ini adalah daftar menu aplikasi.",
+            intro: "Selamat Datang di beranda ePendapatan. Tour ini akan membantu anda untuk memulai ePendapatan pertama kali. Ini adalah daftar menu aplikasi.",
         },
         {
             element: "#step1",
@@ -27,23 +27,23 @@ export class IntroJSService {
         },
         {
             element: "#step_logout",
-            intro: "Tombol untuk keluar dari ePad.",
+            intro: "Tombol untuk keluar dari ePendapatan.",
         },
         {
             element: "#layout-config-button",
-            intro: "Setel tema ePad sesuai keinginan anda.",
+            intro: "Setel tema ePendapatan sesuai keinginan anda.",
         },
         {
             element: "#layout-config-button2",
-            intro: "Untuk bertanya kepada Budi yang akan membantu anda jika mendapatkan kesulitan dalam pengoperasian ePad.",
+            intro: "Untuk bertanya kePendapatana Budi yang akan membantu anda jika mendapatkan kesulitan dalam pengoperasian ePendapatan.",
         },
     ];
 
     featureOne() {
         let stepsOne = [];
         let last_step_id = 0;
-        if (localStorage.getItem("ePad_feature_one")) {
-            stepsOne = JSON.parse(localStorage.getItem("ePad_feature_one"));
+        if (localStorage.getItem("ePendapatan_feature_one")) {
+            stepsOne = JSON.parse(localStorage.getItem("ePendapatan_feature_one"));
             const last_step = stepsOne[stepsOne.length - 1];
             if (last_step !== "done!") {
                 last_step_id = stepsOne.length;
@@ -76,14 +76,14 @@ export class IntroJSService {
                 }
 
                 localStorage.setItem(
-                    "ePad_feature_one",
+                    "ePendapatan_feature_one",
                     JSON.stringify(stepsOne)
                 );
             })
             .oncomplete(function () {
                 stepsOne.push("done!");
                 localStorage.setItem(
-                    "ePad_feature_one",
+                    "ePendapatan_feature_one",
                     JSON.stringify(stepsOne)
                 );
             })
@@ -96,11 +96,11 @@ export class IntroJSService {
     steps_mobile: any[] = [
         {
             element: "#menu-button",
-            intro: "Selamat Datang di beranda ePad. Tour ini akan membantu anda untuk memulai ePad pertama kali. Ini adalah tombol untuk melihat daftar menu aplikasi.",
+            intro: "Selamat Datang di beranda ePendapatan. Tour ini akan membantu anda untuk memulai ePendapatan pertama kali. Ini adalah tombol untuk melihat daftar menu aplikasi.",
         },
         {
             element: ".bottomNavBar ",
-            intro: "Navigasi utama ePad.",
+            intro: "Navigasi utama ePendapatan.",
         },
         {
             element: "#topbar-menu-button",
@@ -112,24 +112,24 @@ export class IntroJSService {
         },
         {
             element: "#step_logout",
-            intro: "Tombol untuk keluar dari ePad.",
+            intro: "Tombol untuk keluar dari ePendapatan.",
         },
         {
             element: "#layout-config-button",
-            intro: "Setel tema ePad sesuai keinginan anda.",
+            intro: "Setel tema ePendapatan sesuai keinginan anda.",
         },
         {
             element: "#layout-config-button2",
-            intro: "Untuk bertanya kepada Budi yang akan membantu anda jika mendapatkan kesulitan dalam pengoperasian ePad.",
+            intro: "Untuk bertanya kePendapatana Budi yang akan membantu anda jika mendapatkan kesulitan dalam pengoperasian ePendapatan.",
         },
     ];
 
     featureOneMobile() {
         let stepsOne = [];
         let last_step_id = 0;
-        if (localStorage.getItem("ePad_feature_one_mobile")) {
+        if (localStorage.getItem("ePendapatan_feature_one_mobile")) {
             stepsOne = JSON.parse(
-                localStorage.getItem("ePad_feature_one_mobile")
+                localStorage.getItem("ePendapatan_feature_one_mobile")
             );
             const last_step = stepsOne[stepsOne.length - 1];
             if (last_step !== "done!") {
@@ -163,14 +163,14 @@ export class IntroJSService {
                 }
 
                 localStorage.setItem(
-                    "ePad_feature_one_mobile",
+                    "ePendapatan_feature_one_mobile",
                     JSON.stringify(stepsOne)
                 );
             })
             .oncomplete(function () {
                 stepsOne.push("done!");
                 localStorage.setItem(
-                    "ePad_feature_one_mobile",
+                    "ePendapatan_feature_one_mobile",
                     JSON.stringify(stepsOne)
                 );
             })

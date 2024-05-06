@@ -134,8 +134,8 @@ export class AppMainComponent implements OnInit {
             });
 
         // reset storage after new features
-        // console.log(!localStorage.hasOwnProperty("ePad_feature_one"));
-        if (!localStorage.hasOwnProperty("ePad_feature_one")) {
+        // console.log(!localStorage.hasOwnProperty("ePendapatan_feature_one"));
+        if (!localStorage.hasOwnProperty("ePendapatan_feature_one")) {
             localStorage.removeItem("userTheme_ripple");
             localStorage.removeItem("userTheme_inputStyle");
             localStorage.removeItem("userTheme_layoutMode");

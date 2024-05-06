@@ -1,5 +1,5 @@
-# ePad_Angular
-Aplikasi ePad FrontEnd Versi Angular
+# ePendapatan_Angular
+Aplikasi ePendapatan FrontEnd Versi Angular
 
 
 # PrimeNG Ultima

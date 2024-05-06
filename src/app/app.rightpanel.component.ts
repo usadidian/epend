@@ -72,13 +72,13 @@ import * as moment from "moment";
                                     [attr.data-index]="i"
                                     [style]="
                                         group.group !== 'WP' &&
-                                        group.group !== 'Executive Epad'
+                                        group.group !== 'Executive ePendapatan'
                                             ? 'cursor:pointer;'
                                             : 'cursor:default;'
                                     "
                                     (click)="
                                         group.group !== 'WP' &&
-                                        group.group !== 'Executive Epad'
+                                        group.group !== 'Executive ePendapatan'
                                             ? app.chat(user)
                                             : null
                                     "

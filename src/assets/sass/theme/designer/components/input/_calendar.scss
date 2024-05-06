@@ -72,7 +72,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
         }
 
         td {
-            padding: $calendarCellDatePadding;
+            padding: $calendarCellDatePendapatanding;
 
             > span {
                 width: $calendarCellDateWidth;
@@ -146,7 +146,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
         margin: $calendarTableMargin;
 
         .p-monthpicker-month {
-            padding: $calendarCellDatePadding;
+            padding: $calendarCellDatePendapatanding;
             transition: $listItemTransition;
             border-radius: $borderRadius;
 
@@ -212,7 +212,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     .p-datepicker {
         table {
             th, td {
-                padding: $calendarCellDatePaddingSM;
+                padding: $calendarCellDatePendapatandingSM;
             }
         }
     }

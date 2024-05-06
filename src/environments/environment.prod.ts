@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    appName: "eSamsatAdvance",
+    appName: "ePendapatanAdvance",
     appVersion: "V.1.0",
     appDevelopBy: "AMANDATA",
     appDevelopByDesc: "...",
@@ -22,9 +22,9 @@ export const environment = {
     },
     firebaseConfig: {
         apiKey: "AIzaSyD74UZw5-HtjWegBvTa9u55wYJ_Wrkg7uI",
-        authDomain: "epad2021-441f3.firebaseapp.com",
-        projectId: "epad2021-441f3",
-        storageBucket: "epad2021-441f3.appspot.com",
+        authDomain: "ePendapatan2021-441f3.firebaseapp.com",
+        projectId: "ePendapatan2021-441f3",
+        storageBucket: "ePendapatan2021-441f3.appspot.com",
         messagingSenderId: "831760010355",
         appId: "1:831760010355:web:e287e4804f6ccd8a9b2e06",
     },
