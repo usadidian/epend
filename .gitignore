@@ -1,0 +1,7 @@
+node_modules
+/public
+/.firebase
+.firebase/hosting.cHVibGlj.cache
+src/environments/environment.ts
+environment.ts
+.firebase/hosting.cHVibGlj.cache

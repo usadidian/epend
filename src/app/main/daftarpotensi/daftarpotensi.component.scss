@@ -1,0 +1,108 @@
+:host ::ng-deep {
+    .mydialog {
+        width: 85vw !important;
+    }
+
+    @media screen and (max-width: 40em) {
+        .mydialog {
+            width: 95vw !important;
+        }
+    }
+
+    .p-autocomplete-input {
+        width: 100%;
+    }
+
+    .p-inputnumber-input {
+        width: inherit !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+    .p-inputwrapper-filled {
+        width: inherit !important;
+    }
+
+    p-inputnumber {
+        width: inherit !important;
+    }
+}
+
+:host ::ng-deep .p-dialog .product-image {
+    width: 150px;
+    margin: 0 auto 2rem auto;
+    display: block;
+}
+
+:host ::ng-deep .p-dialog {
+    width: 70vw;
+}
+
+@media screen and (max-width: 40em) {
+    :host ::ng-deep .p-dialog {
+        width: 75vw;
+    }
+}
+
+:host ::ng-deep .p-autocomplete-input {
+    cursor: pointer !important;
+}
+
+:host ::ng-deep {
+    .p-sidebar-content {
+        padding-top: 14px !important;
+    }
+}
+
+:host ::ng-deep .p-sidebar .p-sidebar-close {
+    z-index: 9 !important;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+    background: #f7f7f7 !important;
+}
+
+:host ::ng-deep .p-dropdown-item-group {
+    background-color: #efefef !important;
+    color: var(--primary-color) !important;
+    font-weight: 500 !important;
+}
+
+:host ::ng-deep .p-togglebutton.p-button.p-highlight {
+    background: var(--primary-color) !important;
+    border-color: #e0e0e1 !important;
+    color: #ffffff !important;
+}
+
+:host ::ng-deep .p-input-icon-left,
+.p-input-icon-right {
+    width: 100% !important;
+}
+
+:host ::ng-deep .p-input-icon-left > .p-inputtext {
+    width: 100% !important;
+}
+
+:host ::ng-deep .p-togglebutton.p-button.p-highlight .p-button-icon-left,
+.p-togglebutton.p-button.p-highlight .p-button-icon-right {
+    color: #ffffff !important;
+}
+
+:host ::ng-deep .p-steps-item .p-menuitem-link {
+    cursor: pointer !important;
+}
+
+:host ::ng-deep .p-steps .p-steps-item {
+    width: 25% !important;
+}
+
+:host ::ng-deep .p-inplace .p-inplace-display {
+    display: block !important;
+}
+
+// STICKY DT
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 69px;
+    // z-index: 99;
+}

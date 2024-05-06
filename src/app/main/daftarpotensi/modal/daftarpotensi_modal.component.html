@@ -1,0 +1,185 @@
+<div class="card">
+    <!-- DATATABLE -->
+    <!-- <h3 style="font-weight: 400">
+                Data Pembayaran
+                <span style="color: #949ba2; font-weight: 600">Pajak</span>
+            </h3>
+            <p>Penyetoran Pajak / STS ke Bank.</p> -->
+
+    <p-table
+        #dtLookup
+        [value]="optSkpLookup"
+        [paginator]="true"
+        [rows]="5"
+        [rowHover]="true"
+        selectionMode="multiple"
+        [loading]="isLoading"
+        [showLoader]="false"
+        [responsive]="false"
+        [(selection)]="selectedSkp"
+        dataKey="NoKohir"
+        (onRowSelect)="onRowSelect($event)"
+        (onRowUnselect)="onRowSelect($event)"
+        styleClass="p-datatable-sm"
+        currentPageReportTemplate="Record Terpilih"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="SubKohir">
+                    SKP/SPTP
+                    <p-sortIcon field="SubKohir"></p-sortIcon>
+                </th>
+                <th pSortableColumn="NamaBadan">
+                    Nama Usaha
+                    <p-sortIcon field="NamaBadan"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Jenis">
+                    Jenis
+                    <p-sortIcon field="Jenis"></p-sortIcon>
+                </th>
+                <th pSortableColumn="NamaJenisPendapatan">
+                    Objek Pajak
+                    <p-sortIcon field="NamaJenisPendapatan"></p-sortIcon>
+                </th>
+                <th pSortableColumn="TglBayar">
+                    Tanggal Bayar
+                    <p-sortIcon field="TglBayar"></p-sortIcon>
+                </th>
+                <th pSortableColumn="JmlBayar">
+                    Jumlah
+                    <p-sortIcon field="JmlBayar"></p-sortIcon>
+                </th>
+                <th style="width: 3rem"></th>
+            </tr>
+            <tr>
+                <th>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dtLookup.filter(
+                                $event.target.value,
+                                'SubKohir',
+                                'contains'
+                            )
+                        "
+                        placeholder="Cari SKP/SPTP"
+                        class="p-column-filter"
+                    />
+                </th>
+                <th>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dtLookup.filter(
+                                $event.target.value,
+                                'NamaBadan',
+                                'contains'
+                            )
+                        "
+                        placeholder="Cari Nama Usaha"
+                        class="p-column-filter"
+                    />
+                </th>
+                <th>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dtLookup.filter(
+                                $event.target.value,
+                                'Jenis',
+                                'contains'
+                            )
+                        "
+                        placeholder="Cari Jenis"
+                        class="p-column-filter"
+                    />
+                </th>
+                <th>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dtLookup.filter(
+                                $event.target.value,
+                                'NamaJenisPendapatan',
+                                'contains'
+                            )
+                        "
+                        placeholder="Cari Objek Pajak"
+                        class="p-column-filter"
+                    />
+                </th>
+                <th>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dtLookup.filter(
+                                $event.target.value,
+                                'TglBayar',
+                                'contains'
+                            )
+                        "
+                        placeholder="Tanggal Bayar"
+                        class="p-column-filter"
+                    />
+                </th>
+                <th>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dtLookup.filter(
+                                $event.target.value,
+                                'JmlBayar',
+                                'contains'
+                            )
+                        "
+                        placeholder="Cari Jumlah"
+                        class="p-column-filter"
+                    />
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="loadingbody">
+            <tr *ngFor="let col of [1, 2, 3, 4, 5, 6]">
+                <td *ngFor="let col of [1, 2, 3, 4, 5]">
+                    <ngx-skeleton-loader
+                        count="1"
+                        appearance="line"
+                    ></ngx-skeleton-loader>
+                </td>
+                <td style="text-align: right">
+                    <ngx-skeleton-loader
+                        count="1"
+                        appearance="circle"
+                    ></ngx-skeleton-loader>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
+            <tr [pSelectableRow]="data" [pSelectableRowIndex]="rowIndex">
+                <td>{{ data.SubKohir }}</td>
+                <td>{{ data.NamaBadan }}</td>
+                <td>{{ data.Jenis }}</td>
+                <td>{{ data.NamaJenisPendapatan }}</td>
+                <td>
+                    {{ data.TglBayar | date: "dd MMM yyyy" }}
+                </td>
+                <td class="p-text-right">
+                    {{ data.JmlBayar | currency: "IDR":"Rp ":"0.0" }}
+                </td>
+
+                <td>
+                    <p-tableCheckbox [value]="data"></p-tableCheckbox>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

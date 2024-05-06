@@ -1,0 +1,425 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <div class="p-grid p-ai-center p-jc-end vertical-container p-fluid">
+        <div class="p-col-12 p-md-8">
+            <h3 style="font-size: 1.7em; color: #4a4c4e">
+                Data Rincian Potensi
+                <span style="color: #949ba2; font-weight: 400">{{
+                    currentNamaBadan
+                }}</span>
+            </h3>
+        </div>
+        <div class="p-col-6 p-md-2">
+            <button
+                pButton
+                pRipple
+                label="Detail Baru"
+                icon="pi pi-plus"
+                class="p-button-outlined p-mr-2"
+                (click)="openNew(product)"
+            ></button>
+        </div>
+        <div class="p-col-6 p-md-2">
+            <button
+                pButton
+                type="button"
+                pRipple
+                label="Kembali"
+                class="p-button p-button-primary"
+                (click)="location.back()"
+                icon="pi pi-arrow-left"
+            ></button>
+        </div>
+    </div>
+
+    <!-- DATATABLE -->
+    <p-table
+        #dt
+        [lazy]="false"
+        editMode="row"
+        [loading]="isLoadingDt"
+        [showLoader]="true"
+        [value]="datas"
+        [rows]="5"
+        [paginator]="true"
+        [rowHover]="true"
+        dataKey="DetailID"
+        [rowsPerPageOptions]="[5, 10, 50]"
+        currentPageReportTemplate="Menampilkan {first} sampai {last} dari {totalRecords} data"
+        [showCurrentPageReport]="true"
+        styleClass="p-datatable-responsive-demo p-datatable-sm"
+    >
+        <ng-template pTemplate="caption">
+            <div
+                class="p-grid p-ai-center p-jc-end vertical-container p-fluid"
+            ></div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="KdUrut">
+                    Kode Potensi Pajak <p-sortIcon field="KdUrut"></p-sortIcon>
+                </th>
+                <th pSortableColumn="JenisPotensi">
+                    Jenis Potensi Pajak<p-sortIcon
+                        field="JenisPotensi"
+                    ></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="Satuan">
+                    Satuan<p-sortIcon field="Satuan"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Jumlah">
+                    Jumlah<p-sortIcon field="Jumlah"></p-sortIcon>
+                </th>
+                <th pSortableColumn="PotensiPerTahun">
+                    PotensiPerTahun<p-sortIcon
+                        field="PotensiPerTahun"
+                    ></p-sortIcon>
+                </th>
+                <th pSortableColumn="TglPendataan">
+                    Tgl Pendataan<p-sortIcon
+                        field="TglPendataan"
+                    ></p-sortIcon>
+                </th>
+                <th pSortableColumn="Keterangan">
+                    Keterangan<p-sortIcon field="Keterangan"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td class="p-text-center" [attr.colspan]="5">
+                    <h5 class="p-mt-4 p-mb-3">Belum ada data rincian STS.</h5>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template
+            pTemplate="body"
+            let-data
+            let-rowIndex="rowIndex"
+            let-expanded="expanded"
+            let-editing="editing"
+            let-ri="rowIndex"
+        >
+            <tr *ngIf="isLoadingDt">
+                <td>
+                    <ngx-skeleton-loader
+                        count="4"
+                        appearance="line"
+                    ></ngx-skeleton-loader>
+                </td>
+                <td style="text-align: right">
+                    <ngx-skeleton-loader
+                        count="2"
+                        appearance="circle"
+                    ></ngx-skeleton-loader>
+                </td>
+            </tr>
+
+            <tr [pEditableRow]="data" *ngIf="!isLoadingDt">
+                <td>
+                    <span class="p-column-title">Kode Potensi Pajak</span
+                    >{{ data.KdUrut }}
+                </td>
+                <td>
+                    <span class="p-column-title">Jenis Potensi Pajak</span
+                    >{{ data.JenisPotensi }}
+                </td>
+                <td>
+                    <span class="p-column-title">Satuan</span>
+                    {{ data.Satuan }}
+                </td>
+                <td>
+                    <span class="p-column-title">Jumlah</span>
+                    <div>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber
+                                    [style]="{
+                                        width: '100%'
+                                    }"
+                                    [(ngModel)]="data.Jumlah"
+                                >
+                                </p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ data.Jumlah }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </div>
+                </td>
+                <td>
+                    <span class="p-column-title">PotensiPerTahun</span>
+                    <div>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber
+                                    [style]="{
+                                        width: '100%'
+                                    }"
+                                    [(ngModel)]="data.PotensiPerTahun"
+                                >
+                                </p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{
+                                    data.PotensiPerTahun
+                                        | currency : "IDR" : "Rp " : "0.0"
+                                }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </div>
+                </td>
+                <td>
+                    <span class="p-column-title">TglPendataan</span>
+                    <div>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-calendar
+                                    required
+                                    [readonlyInput]="true"
+                                    dateFormat="dd-mm-yy"
+                                    id=""
+                                    [locale]="id"
+                                    [(ngModel)]="data.TglPendataan"
+                                    [showIcon]="true"
+                                    [showButtonBar]="false"
+                                    appendTo="body"
+                                ></p-calendar>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ data.TglPendataan | date: "dd MMM yyyy"}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </div>
+                </td>
+                <td>
+                    <span class="p-column-title">Keterangan</span>
+                    <div>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input
+                                    pInputText
+                                    type="text"
+                                    [style]="{
+                                        width: '90%'
+                                    }"
+                                    [(ngModel)]="data.Keterangan"
+                                />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ data.Keterangan }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </div>
+                </td>
+                <td style="text-align: right">
+                    <button
+                        pTooltip="Ubah data"
+                        *ngIf="!editing"
+                        pButton
+                        pRipple
+                        type="button"
+                        pInitEditableRow
+                        icon="pi pi-pencil"
+                        (click)="onRowEditInit(data)"
+                        class="p-button-rounded p-button-outlined p-mr-2"
+                    ></button>
+                    <button
+                        pTooltip="Simpan"
+                        *ngIf="editing"
+                        pButton
+                        pRipple
+                        type="button"
+                        pSaveEditableRow
+                        icon="pi pi-check"
+                        (click)="onRowEditSave(data)"
+                        class="p-button-rounded p-button-text p-button-primary p-mr-2"
+                    ></button>
+                    <button
+                        pTooltip="Batal"
+                        *ngIf="editing"
+                        pButton
+                        pRipple
+                        type="button"
+                        pCancelEditableRow
+                        icon="pi pi-times"
+                        (click)="onRowEditCancel(data, ri)"
+                        class="p-button-rounded p-button-text p-button-danger p-mr-2"
+                    ></button>
+                    <button
+                        pTooltip="Hapus"
+                        tooltipPosition="left"
+                        pButton
+                        pRipple
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-outlined p-button-danger"
+                        (click)="deleteData(data)"
+                    ></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- ADD DIALOG-->
+<p-dialog
+    (onHide)="hideDialog()"
+    [blockScroll]="true"
+    header="{{ modalTitle }}"
+    (onShow)="showDialogMaximized($event, dialDetail)"
+    #dialDetail
+    [(visible)]="showDialog"
+    [modal]="true"
+    [maximizable]="false"
+    [draggable]="false"
+    styleClass="p-fluid mydialog"
+    [responsive]="true"
+    
+>
+    <p-treeTable
+        #dt
+        [columns]="dataCols"
+        styleClass="p-treetable-sm"
+        [value]="[optJnsPend]"
+        dataKey="id"
+        type="checkbox"
+        selectionMode="checkbox" 
+        [(selection)]="selectedNodes"
+
+    >
+        <ng-template pTemplate="caption">
+            <div class="p-grid p-jc-end">
+                <div class="p-col-12 p-md-4">
+                    <div class="p-inputgroup">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                [(ngModel)]="searchQuery"
+                                type="text"
+                                (input)="
+                                    dt.filterGlobal(
+                                        $event.target.value,
+                                        'contains'
+                                    )
+                                "
+                            />
+                            <label>Cari {{ pageTitle }}...</label>
+                        </span>
+                        <span
+                            style="
+                                background-color: var(--primary-color);
+                                color: #fff;
+                            "
+                            class="p-inputgroup-addon"
+                        >
+                            <i class="pi pi-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Jenis Potensi</th>
+                <th style="width: 4rem"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode">
+                <td
+                    [pTooltip]="rowData['JenisPotensi']"
+                    tooltipPosition="bottom"
+                    showDelay="1000"
+                    hideDelay="500"
+                    class="p-text-truncate"
+                >
+                    <p-treeTableToggler
+                        [rowNode]="rowNode"
+                    ></p-treeTableToggler>
+                    <p-treeTableCheckbox
+                    [value]="rowNode"
+                    ></p-treeTableCheckbox>
+
+                    <span
+                        style="
+                            color: rgba(0, 0, 0, 0.5);
+                            font-size: 12px;
+                            font-weight: bold;
+                        "
+                        >{{ rowData["KdUrut"] }} </span
+                    ><span
+                        [style]="
+                            rowData['expanded']
+                                ? 'font-size: 13px;font-weight: bold'
+                                : ''
+                        "
+                        >{{ rowData["JenisPotensi"] }}</span
+                    >
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-treeTable>
+
+    <p-footer>
+        <div class="p-grid p-ai-center p-jc-end vertical-container">
+            <div class="p-col-12 p-md-8">
+                <button
+                    pButton
+                    pRipple
+                    label="Batal"
+                    icon="pi pi-times"
+                    style="color: #9e9d9e"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    [disabled]="!this.optJnsTarifSelectedMulti"
+                    pButton
+                    pRipple
+                    label="Simpan"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="postPutData()"
+                ></button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<p-blockUI
+    [autoZIndex]="true"
+    styleClass="overlay-load dark-panel"
+    [blocked]="isLoading"
+>
+    <img
+        style="margin-bottom: 160px"
+        src="assets/layout/images/logo.png"
+        width="160"
+    />
+</p-blockUI>
+
+<p-progressSpinner
+    [style]="{
+        position: 'fixed',
+        width: '60px',
+        height: '60px',
+        top: '50%',
+        left: '50%',
+        'margin-top': '-40px',
+        'margin-left': '-40px',
+        'z-index': '1000000'
+    }"
+    strokeWidth="8"
+    animationDuration=".8s"
+    *ngIf="isLoading"
+></p-progressSpinner>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

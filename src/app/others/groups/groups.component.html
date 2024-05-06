@@ -1,0 +1,381 @@
+<p-toast></p-toast>
+
+<h3 style="font-weight: 400" class="p-mb-6 p-mt-0">
+    {{ pageTitlePrefix }}
+    <span style="color: #949ba2; font-weight: 600">{{ pageTitle }}</span>
+</h3>
+
+<div class="p-fluid p-grid p-jc-between vertical-container p-mb-2 p-ai-center">
+    <div class="p-col-12 p-md-3">
+        <div class="p-inputgroup proclaim_search">
+            <span
+                style="
+                    background-color: var(--primary-color);
+                    color: #fff;
+                    width: 2.25rem;
+                "
+                class="p-inputgroup-addon"
+            >
+                <i class="pi pi-search"></i>
+            </span>
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    [(ngModel)]="searchQuery"
+                    type="text"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                />
+                <label>Cari {{ pageTitle }}...</label>
+            </span>
+        </div>
+    </div>
+
+    <div class="p-col p-md-2">
+        <button
+            pButton
+            pRipple
+            label="{{ pageTitle }} Baru"
+            icon="pi pi-plus"
+            class="p-button-rounded p-button-raised p-mr-2 proclaim_btn_add"
+            (click)="addEditDialog(null)"
+        ></button>
+    </div>
+</div>
+
+<!-- DATATABLE -->
+<p-table
+    #dt
+    [globalFilterFields]="['nama_group']"
+    [value]="groupsStoreService.datas$ | async"
+    [rowHover]="true"
+    dataKey="GroupId"
+    [showLoader]="false"
+    styleClass="p-datatable-responsive-demo"
+    [paginator]="true"
+    [rows]="isMobile ? 100 : 5"
+    [rowsPerPageOptions]="[5, 50, 100]"
+    [pageLinks]="isMobile ? 2 : 5"
+    [showCurrentPageReport]="!isMobile ? true : false"
+    alwaysShowPaginator="false"
+    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} Rows per page: {RowsPerPageDropdown}"
+    currentPageReportTemplate="Menampilkan {first} sampai {last} dari {totalRecords} grup"
+    [rowTrackBy]="datasTrackFn"
+>
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 20rem" pSortableColumn="nama_group">
+                Nama<p-sortIcon field="nama_group"> </p-sortIcon>
+            </th>
+            <th style="width: 20rem" pSortableColumn="code_group">
+                Kode<p-sortIcon field="code_group"> </p-sortIcon>
+            </th>
+            <th style="width: 18rem" pSortableColumn="description">
+                Deskripsi<p-sortIcon field="description"> </p-sortIcon>
+            </th>
+            <th style="width: 8rem"></th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-data>
+        <tr>
+            <td>
+                <div class="p-column-title">Kelompok</div>
+                <div class="p-text-bold">{{ data.nama_group | titlecase }}</div>
+            </td>
+            <td>
+                <div class="p-column-title">Kode</div>
+                <div>{{ data.code_group }}</div>
+            </td>
+            <td>
+                <div class="p-column-title">Deskripsi</div>
+                <div>{{ data.description | titlecase }}</div>
+            </td>
+            <td style="width: 10rem" class="p-text-right">
+                <button
+                    pTooltip="Ubah"
+                    pButton
+                    pRipple
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-outlined p-mr-2"
+                    (click)="addEditDialog(data)"
+                ></button>
+                <button
+                    pTooltip="Hapus"
+                    pButton
+                    pRipple
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-outlined"
+                    (click)="deleteData(data)"
+                ></button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- ADD-EDIT DIALOG-->
+<p-dialog
+    [baseZIndex]="2"
+    [position]="isMobile ? 'bottom' : 'center'"
+    [blockScroll]="true"
+    (onShow)="showDialogMaximized($event, dialDetail)"
+    #dialDetail
+    [(visible)]="showDialog"
+    [modal]="true"
+    [maximizable]="true"
+    [draggable]="true"
+    styleClass="p-fluid"
+    [responsive]="true"
+>
+    <p-header>
+        <h3>Grup Baru</h3>
+    </p-header>
+    <div class="p-grid p-ai-center p-mt-4">
+        <div class="p-field p-col-12 p-md-8">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.nama_group"
+                />
+                <label>Nama Grup*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.nama_group"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.code_group"
+                />
+                <label>Kode*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.code_group"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="number"
+                    [(ngModel)]="addEditFields.IsAdmin"
+                />
+                <label>IsAdmin*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsAdmin"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="number"
+                    [(ngModel)]="addEditFields.IsWP"
+                />
+                <label>IsWP*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsWP"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <!-- <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.IsPendaftaran"
+                />
+                <label>IsPendaftaran*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPendaftaran"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.IsPendataan"
+                />
+                <label>IsPendataan*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPendataan"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div> -->
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="number"
+                    [(ngModel)]="addEditFields.IsPendaftaran"
+                />
+                <label>IsPendaftaran*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPendaftaran"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="number"
+                    [(ngModel)]="addEditFields.IsPendataan"
+                />
+                <label>IsPendataan*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPendataan"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.IsPenetapan"
+                />
+                <label>IsPenetapan*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPenetapan"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.IsPembayaran"
+                />
+                <label>IsPembayaran*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPembayaran"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-4">
+            <span class="p-float-label">
+                <input
+                    required
+                    pInputText
+                    type="text"
+                    [(ngModel)]="addEditFields.IsPenyetoran"
+                />
+                <label>IsPenyetoran*</label>
+                <small
+                    class="p-invalid"
+                    *ngIf="submitted && !addEditFields.IsPenyetoran"
+                    >*wajib diisi.</small
+                >
+            </span>
+        </div>
+
+        <div class="p-field p-col-12 p-md-12">
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    class="p-text-bold"
+                    type="text"
+                    [(ngModel)]="addEditFields.description"
+                />
+                <label>Deskripsi</label>
+            </span>
+        </div>
+    </div>
+    <p-footer>
+        <button
+            pButton
+            pRipple
+            label="Batal"
+            icon="pi pi-times"
+            style="color: #9e9d9e"
+            class="p-button-text"
+            (click)="hideDialog()"
+        ></button>
+        <button
+            [disabled]="!addEditFields.nama_group || !addEditFields.code_group"
+            pButton
+            pRipple
+            label="Simpan"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="postPutData()"
+        ></button>
+    </p-footer>
+</p-dialog>
+
+<p-blockUI
+    [autoZIndex]="true"
+    styleClass="overlay-load dark-panel"
+    [blocked]="isLoading"
+>
+    <img
+        style="margin-bottom: 160px"
+        src="assets/layout/images/logo.png"
+        width="160"
+    />
+</p-blockUI>
+<p-progressSpinner
+    [style]="{
+        position: 'fixed',
+        width: '60px',
+        height: '60px',
+        top: '50%',
+        left: '50%',
+        'margin-top': '-40px',
+        'margin-left': '-40px',
+        'z-index': '1000000'
+    }"
+    strokeWidth="8"
+    animationDuration=".8s"
+    *ngIf="isLoading"
+></p-progressSpinner>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

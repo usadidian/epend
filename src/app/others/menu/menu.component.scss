@@ -1,0 +1,174 @@
+:host ::ng-deep {
+    .mydialog {
+        width: 75vw;
+    }
+
+    .p-listbox {
+        border: none !important;
+    }
+
+    // .p-dropdown-label {
+    //     padding: 6px;
+    // }
+}
+
+:host ::ng-deep .p-autocomplete-input {
+    cursor: pointer !important;
+}
+
+:host ::ng-deep .p-dropdown-item-group {
+    background-color: #efefef !important;
+    color: var(--primary-color) !important;
+    font-weight: 500 !important;
+}
+
+:host ::ng-deep .p-togglebutton.p-button.p-highlight {
+    background: var(--primary-color) !important;
+    border-color: #5f5f5f;
+    color: #ffffff !important;
+}
+
+:host ::ng-deep .p-input-icon-left,
+.p-input-icon-right {
+    width: 100% !important;
+}
+
+:host ::ng-deep .p-input-icon-left > .p-inputtext {
+    width: 100% !important;
+}
+
+:host ::ng-deep .p-togglebutton.p-button.p-highlight .p-button-icon-left,
+.p-togglebutton.p-button.p-highlight .p-button-icon-right {
+    color: #ffffff !important;
+}
+
+:host ::ng-deep .p-steps-item .p-menuitem-link {
+    cursor: pointer !important;
+}
+
+:host ::ng-deep .p-steps .p-steps-item {
+    width: 25% !important;
+}
+
+:host ::ng-deep .p-inplace .p-inplace-display {
+    display: block !important;
+}
+
+// :host ::ng-deep .p-steps.steps-custom {
+//     margin-bottom: 30px !important;
+// }
+
+// :host ::ng-deep .p-steps.steps-custom .p-steps-item .p-menuitem-link {
+//     padding: 0 1em !important;
+//     overflow: visible !important;
+// }
+
+// :host ::ng-deep .p-steps.steps-custom .p-steps-item .p-steps-number {
+//     background-color: #0081c2 !important;
+//     color: #FFFFFF !important;
+//     display: inline-block !important;
+//     width: 36px !important;
+//     border-radius: 50% !important;
+//     margin-top: -14px !important;
+//     margin-bottom: 10px !important;
+// }
+
+:host ::ng-deep .p-steps-title {
+    color: #555555;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background-color: white !important;
+}
+
+// STICKY DT
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 69px;
+    // z-index:2;
+}
+
+// :host ::ng-deep .btn-trash {
+//     position: -webkit-sticky;
+//     position: sticky;
+//     top: 69px;
+// }
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    width: 90%;
+    margin: auto;
+    border: none !important;
+    border-radius: 10px;
+}
+
+.pendaftaran_img_label {
+    top: -0.5rem !important;
+    background-color: #ffffff;
+    padding: 2px 4px;
+    margin-left: 0px;
+    margin-top: 0;
+    border-radius: 4px;
+}
+
+.upload-btn-wrapper img {
+    width: 100%;
+    padding: 0px;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    border-radius: 10px;
+}
+.upload-btn {
+    position: absolute;
+    left: 10%;
+    margin-bottom: 10px;
+    width: 80%;
+    bottom: 0;
+    opacity: 0.5;
+}
+
+.upload-btn:hover {
+    opacity: 1;
+}
+
+.upload-btn-wrapper input[type="file"] {
+    font-size: 140px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+    opacity: 0;
+}
+.map-hint {
+    padding: 2px;
+    color: rgba(0, 0, 0, 0.5);
+    font-style: italic;
+    font-size: 10px;
+    font-weight: 600;
+    top: 22px;
+    background: #fff;
+}
+
+:host ::ng-deep {
+    .gm-svpc {
+        display: none !important;
+    }
+    .gm-style-cc {
+        display: none !important;
+    }
+    .p-inplace-display {
+        border: 1px solid rgba(0, 0, 0, 0.38);
+    }
+    .p-inplace-display i {
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.6);
+    }
+    .p-inplace-display span {
+        color: rgba(0, 0, 0, 0.6);
+    }
+}
+
+:host ::ng-deep ::-webkit-file-upload-button {
+    cursor: pointer;
+}

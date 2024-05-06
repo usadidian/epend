@@ -1,0 +1,315 @@
+<div class="p-jc-center p-grid p-ai-center p-fluid vertical-container p-mr-0">
+    <div class="p-col-12 p-mb-6 p-p-0">
+        <div
+            class="p-jc-between area p-grid p-ai-center p-fluid vertical-container p-m-0"
+            style="height: 75px; background-color: var(--primary-color)"
+        >
+            <div class="p-col-4 p-text-center">
+                <img
+                    class="usadi-logo-shadow p-p-2 p-mt-1"
+                    style="height: 60px"
+                    src="/assets/layout/images/logo2x.png"
+                />
+            </div>
+            <div class="p-col-4 p-text-center">
+                <img
+                    class="usadi-logo-shadow p-text-right p-p-2"
+                    style="height: 46px"
+                    src="{{ environmentData.appCopyrightByLogoPath }}"
+                />
+                <p class="usadi-owner-text p-mt-1" style="color: #fff">
+                    {{ environmentData.appCopyrightBy }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <div
+            class="p-jc-center p-m-0 area p-grid p-ai-center p-fluid vertical-container"
+        >
+            <div
+                class="p-lg-4 p-col-10 card p-mt-6 card_login p-pb-0 login-panel p-fluid p-shadow-40"
+            >
+                <div class="p-grid p-fluid vertical-container">
+                    <div class="p-col-12 p-md-12 p-pt-6">
+                        <div
+                            class="p-grid p-formgrid p-fluid p-ai-center vertical-container"
+                        >
+                            <ng-container *ngIf="!reloadState && !key2">
+                                <div class="p-col-12">
+                                    <h4 class="p-mb-0" style="color: #555">
+                                        Untuk Melakukan Reset Kata Sandi,
+                                        Masukan Kode OTP.
+                                    </h4>
+                                    <p class="p-pt-2">
+                                        Kode OTP telah dikirimkan ke email anda.
+                                    </p>
+                                </div>
+
+                                <div class="p-field p-col-12">
+                                    <!-- <input
+                                            type="email"
+                                            pInputText
+                                            id="username"
+                                            [(ngModel)]="user.username"
+                                            required
+                                            autofocus
+                                        /> -->
+                                    <p-inputMask
+                                        [style]="{
+                                            'font-size': '25px',
+                                            'font-weight': 'bold',
+                                            'text-align': 'center'
+                                        }"
+                                        id="username"
+                                        [(ngModel)]="user.username"
+                                        [required]="true"
+                                        [autoClear]="true"
+                                        [unmask]="true"
+                                        [autoFocus]="true"
+                                        mask="9-9-9-9-9-9"
+                                        placeholder="X-X-X-X-X-X"
+                                    ></p-inputMask>
+                                    <small
+                                        class="p-invalid"
+                                        *ngIf="
+                                            user.username?.length > 0 &&
+                                            !validate()
+                                        "
+                                        >*Kode OTP wajib diisi dan belum
+                                        sesuai.</small
+                                    >
+                                </div>
+                                <div class="p-col-6 p-px-3">
+                                    <button
+                                        class="loginBtnCancel"
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        icon="pi"
+                                        label="Batal"
+                                        (click)="back()"
+                                    >
+                                        <i
+                                            class="material-icons material-icons-outlined"
+                                            >arrow_back</i
+                                        >
+                                    </button>
+                                </div>
+                                <div class="p-col-6 p-px-3">
+                                    <button
+                                        [disabled]="!validate()"
+                                        class="loginBtn"
+                                        pButton
+                                        pRipple
+                                        required
+                                        type="button"
+                                        icon="pi"
+                                        label="OK"
+                                        (click)="login()"
+                                    >
+                                        <i
+                                            class="material-icons material-icons-outlined"
+                                            >verified_user</i
+                                        >
+                                    </button>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="reloadState && !key2">
+                                <div class="p-col-12">
+                                    <h4 class="p-mb-0" style="color: #555">
+                                        Silahkan Ulang Proses Lupa Kata Sandi.
+                                    </h4>
+                                    <p>Halaman ini telah kadaluarsa.</p>
+                                </div>
+                                <div class="p-col-12 p-px-6 p-pb-3">
+                                    <button
+                                        class="loginBtnCancel"
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        label="OK"
+                                        (click)="back()"
+                                    ></button>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="key2">
+                                <div class="p-col-12">
+                                    <h4 class="p-mb-0" style="color: #555">
+                                        Reset Kata Sandi.
+                                    </h4>
+                                    <p class="p-pt-2">
+                                        Ubah Kata Sandi lama anda.
+                                    </p>
+                                </div>
+                                <div class="p-field p-col-12 p-mt-3">
+                                    <label>Kata Sandi Baru</label>
+                                    <input
+                                        autocomplete="off"
+                                        pInputText
+                                        name="newPwd"
+                                        type="password"
+                                        [(ngModel)]="newPwd"
+                                        (input)="chekPwdStrength()"
+                                    />
+                                    <small
+                                        class="{{
+                                            strengthBadge.backgroundColor
+                                        }} p-pt-2"
+                                        *ngIf="strengthBadge?.textTitle != ''"
+                                        >*{{
+                                            strengthBadge.textContent
+                                        }}.</small
+                                    >
+                                </div>
+                                <div class="p-field p-col-12">
+                                    <label>Konfirmasi Kata Sandi Baru</label>
+                                    <input
+                                        autocomplete="off"
+                                        pInputText
+                                        name="newPwd2"
+                                        type="password"
+                                        [(ngModel)]="newPwd2"
+                                    />
+                                </div>
+
+                                <div class="p-col-6 p-px-3">
+                                    <button
+                                        class="loginBtnCancel"
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        icon="pi"
+                                        label="Batal"
+                                        (click)="back()"
+                                    >
+                                        <i
+                                            class="material-icons material-icons-outlined"
+                                            >arrow_back</i
+                                        >
+                                    </button>
+                                </div>
+                                <div class="p-col-6 p-px-3">
+                                    <button
+                                        [disabled]="!validate2()"
+                                        class="loginBtn"
+                                        pButton
+                                        pRipple
+                                        required
+                                        type="button"
+                                        icon="pi"
+                                        label="OK"
+                                        (click)="changePwd()"
+                                    >
+                                        <i
+                                            class="material-icons material-icons-outlined"
+                                            >verified_user</i
+                                        >
+                                    </button>
+                                </div>
+                            </ng-container>
+
+                            <div class="p-col-12">
+                                <p
+                                    style="
+                                        text-align: center;
+                                        font-size: 10px;
+                                        color: #999;
+                                    "
+                                >
+                                    {{ environmentData.appName }}
+                                    {{ environmentData.appVersion }} <br />
+                                    copyright ©
+                                    {{ environmentData.appCopyrightBy }}
+                                    {{ environmentData.appCopyrightYear }} 
+                                    <!-- - Developed
+                                    By -->
+                                    <!-- <a
+                                        href="{{ environmentData.appCopyrightWebsite }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >{{ environmentData.appDevelopBy }}</a
+                                    > -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p-dialog
+                        header="Kode OTP Tidak Valid!"
+                        [(visible)]="displayError"
+                        modal="modal"
+                        showEffect="fade"
+                        [style]="{ width: '300px' }"
+                    >
+                        <div style="line-height: 1.5">
+                            Kode OTP yang anda masukan salah.
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <p-button
+                                (click)="displayError = false"
+                                styleClass="p-button-text"
+                            ></p-button>
+                        </ng-template>
+                    </p-dialog>
+
+                    <p-dialog
+                        header="Terjadi Kesalahan!"
+                        [(visible)]="displayError2"
+                        modal="modal"
+                        showEffect="fade"
+                        [style]="{ width: '300px' }"
+                    >
+                        <div style="line-height: 1.5">
+                            Mohon Maaf Terjadi Kesalahan!.
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <p-button
+                                (click)="displayError2 = false"
+                                styleClass="p-button-text"
+                            ></p-button>
+                        </ng-template>
+                    </p-dialog>
+
+                    <p-dialog
+                        header="Kata Sandi Akun Anda Telah Diperbaharui.!"
+                        [(visible)]="displaySuccess"
+                        modal="modal"
+                        showEffect="fade"
+                        [style]="{ width: '300px' }"
+                    >
+                        <div style="line-height: 1.5">
+                            Silahkan melakukan login dengan kata sandi baru.
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <p-button
+                                (click)="displaySuccess = false"
+                                styleClass="p-button-text"
+                            ></p-button>
+                        </ng-template>
+                    </p-dialog>
+
+                    <p-blockUI [blocked]="isLoading"></p-blockUI>
+                    <p-progressSpinner
+                        [style]="{
+                            position: 'fixed',
+                            width: '80px',
+                            height: '80px',
+                            top: '50%',
+                            left: '50%',
+                            'margin-top': '-40px',
+                            'margin-left': '-40px',
+                            'z-index': '1000000'
+                        }"
+                        strokeWidth="5"
+                        animationDuration=".5s"
+                        *ngIf="isLoading"
+                    ></p-progressSpinner>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

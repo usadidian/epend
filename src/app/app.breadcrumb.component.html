@@ -1,0 +1,27 @@
+<div class="layout-breadcrumb">
+    <ul>
+        <li>
+            <a routerLink="/admin">
+                <i class="pi pi-home"></i>
+            </a>
+        </li>
+        <li>/</li>
+        <ng-template ngFor let-item let-last="last" [ngForOf]="items">
+            <li>
+                <a [routerLink]="item.routerLink" *ngIf="item.routerLink">{{
+                    item.label
+                }}</a>
+                <ng-container *ngIf="!item.routerLink">{{
+                    item.label
+                }}</ng-container>
+            </li>
+            <li *ngIf="!last">/</li>
+        </ng-template>
+    </ul>
+
+    <div class="layout-breadcrumb-options">
+        <a id="step_logout" (click)="logout()" title="Logout">
+            <i class="pi pi-power-off"></i>
+        </a>
+    </div>
+</div>

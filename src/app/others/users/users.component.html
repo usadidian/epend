@@ -1,0 +1,906 @@
+<p-toast></p-toast>
+
+<h3 style="font-weight: 400" class="p-mb-6 p-mt-0">
+    {{ pageTitlePrefix }}
+    <span style="color: #949ba2; font-weight: 600">{{ pageTitle }}</span>
+</h3>
+
+<div class="p-fluid p-grid p-jc-between vertical-container p-mb-2 p-ai-center">
+    <div class="p-col-12 p-md-3">
+        <div class="p-inputgroup proclaim_search">
+            <span
+                style="
+                    background-color: var(--primary-color);
+                    color: #fff;
+                    width: 2.25rem;
+                "
+                class="p-inputgroup-addon"
+            >
+                <i class="pi pi-search"></i>
+            </span>
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    [(ngModel)]="searchQuery"
+                    type="text"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                />
+                <label>Cari {{ pageTitle }}...</label>
+            </span>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-4">
+        <span class="p-float-label">
+            <p-dropdown
+                [options]="groupsStoreService.datas$ | async"
+                [(ngModel)]="optGroupsSelected"
+                [autoDisplayFirst]="false"
+                [showClear]="true"
+                (onChange)="dt.filter($event.value, 'filter_group', 'EQUALS')"
+                optionLabel="nama_group"
+            ></p-dropdown>
+            <label>Grup</label>
+        </span>
+    </div>
+
+    <div class="p-col p-md-2">
+        <button
+            pButton
+            pRipple
+            label="{{ pageTitle }} Baru"
+            icon="pi pi-plus"
+            class="p-button-rounded p-button-raised p-mr-2 proclaim_btn_add"
+            (click)="addEditDialog(null)"
+        ></button>
+    </div>
+</div>
+
+<!-- DATATABLE -->
+<p-table
+    #dt
+    [lazy]="true"
+    [totalRecords]="UsersService.totalRecords$ | async"
+    (onLazyLoad)="loadDataLazy($event)"
+    [value]="UsersService.datas$ | async"
+    [rows]="isMobile ? 50 : 5"
+    [rowHover]="true"
+    dataKey="userid"
+    [showLoader]="false"
+    styleClass="p-datatable-responsive-demo"
+    [paginator]="true"
+    [rowsPerPageOptions]="[5, 10, 100]"
+    [pageLinks]="isMobile ? 2 : 5"
+    [showCurrentPageReport]="!isMobile ? true : false"
+    alwaysShowPaginator="false"
+    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} Rows per page: {RowsPerPageDropdown}"
+    currentPageReportTemplate="Menampilkan {first} sampai {last} dari {totalRecords} pengguna"
+    expandableRows="true"
+>
+    <!-- <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 20rem" pSortableColumn="nama_user">
+                Nama<p-sortIcon field="nama_user"> </p-sortIcon>
+            </th>
+            <th style="width: 18rem" pSortableColumn="nama_group">
+                Grup<p-sortIcon field="nama_group"> </p-sortIcon>
+            </th>
+            <th style="width: 10rem"></th>
+        </tr>
+    </ng-template> -->
+
+    <ng-template pTemplate="body" let-data let-expanded="expanded">
+        <tr *ngIf="!isLoadingDt" [pRowToggler]="data">
+            <td>
+                <div class="p-grid p-ai-center vertical-container p-pt-2">
+                    <div class="p-col-fixed" style="width: 40px">
+                        <ngx-avatar
+                            initialsSize="3"
+                            size="30"
+                            name="{{ data.name }}"
+                            src="{{ data.avatar }}"
+                        >
+                        </ngx-avatar>
+                    </div>
+                    <div class="p-col expanded_dt_avatar">
+                        <div style="font-weight: 600">
+                            {{ data.name | titlecase }}
+                        </div>
+                        <div class="expanded_dt_subtitle" *ngIf="data.email">
+                            <span
+                                class="material-icons material-icons-outlined"
+                            >
+                                email
+                            </span>
+                            {{ data.email }}
+                        </div>
+                        <div
+                            class="expanded_dt_subtitle"
+                            *ngIf="data.group_name"
+                        >
+                            <span
+                                class="material-icons material-icons-outlined"
+                            >
+                                groups
+                            </span>
+                            {{ data.group_name }}
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <!-- <td class="p-column-only-md">
+                <div class="p-column-title">Grup</div>
+                <div>{{ data.group_name | titlecase }}</div>
+            </td> -->
+            <td style="width: 5rem" class="p-column-only-md p-text-right">
+                <button
+                    pTooltip="Hapus"
+                    pButton
+                    pRipple
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-outlined"
+                    (click)="deleteData(data)"
+                ></button>
+            </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-datachild>
+        <tr class="rowexpansion rowexpansionrow">
+            <td class="rowexpansion" colspan="2">
+                <div class="p-grid p-mt-2">
+                    <div
+                        class="
+                            p-field
+                            p-col-12
+                            p-md-2
+                            p-text-center
+                            p-mt-2
+                            p-mt-md-0
+                        "
+                    >
+                        <span class="p-float-label">
+                            <div
+                                *ngIf="!datachild.avatar"
+                                class="upload-btn-wrapper"
+                            >
+                                <img
+                                    *ngIf="!datachild.avatar"
+                                    src="assets/layout/images/placeholder.png"
+                                />
+                                <img
+                                    class="p-shadow-3"
+                                    *ngIf="datachild.avatar"
+                                    [src]="datachild.avatar"
+                                />
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    label="Ganti"
+                                    *ngIf="datachild.avatar"
+                                    (click)="uploader.click()"
+                                    class="upload-btn p-button-sm"
+                                ></button>
+                                <input
+                                    #uploader
+                                    (change)="
+                                        fileChangeEvent(
+                                            $event,
+                                            datachild.userid
+                                        )
+                                    "
+                                    type="file"
+                                    name="myfile"
+                                />
+                            </div>
+
+                            <div
+                                *ngIf="datachild.avatar"
+                                class="upload-btn-wrapper"
+                            >
+                                <img
+                                    class="p-shadow-2"
+                                    [src]="datachild.avatar"
+                                />
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    label="Ganti"
+                                    *ngIf="datachild.avatar"
+                                    (click)="uploader.click()"
+                                    class="upload-btn p-button-sm"
+                                ></button>
+                                <input
+                                    (change)="
+                                        fileChangeEvent(
+                                            $event,
+                                            datachild.userid
+                                        )
+                                    "
+                                    type="file"
+                                    name="myfile2"
+                                />
+                            </div>
+                            <label class="pendaftaran_img_label"
+                                >Foto Profil</label
+                            >
+                        </span>
+                    </div>
+
+                    <div class="p-col-12 p-md-5">
+                        <div class="p-grid p-fluid p-jc-between p-ai-center">
+                            <div class="p-col-3 rowexpansion_title">Nama</div>
+                            <div class="p-col-9">
+                                <p-inplace
+                                    [style]="{
+                                        height: '33px'
+                                    }"
+                                    [closable]="true"
+                                    [active]="!datachild.name"
+                                    closeIcon="pi pi-check"
+                                    (onDeactivate)="
+                                        putData({
+                                            id: datachild.userid,
+                                            nama_user: datachild.name
+                                        })
+                                    "
+                                >
+                                    <ng-template pTemplate="display">
+                                        <div
+                                            class="p-d-inline-flex p-ai-center"
+                                        >
+                                            <span class="p-mr-2">
+                                                {{
+                                                    datachild.name || "tambah"
+                                                }}</span
+                                            >
+                                            <span
+                                                [class]="
+                                                    !datachild.name
+                                                        ? 'pi pi-plus'
+                                                        : 'pi pi-pencil'
+                                                "
+                                                style="vertical-align: middle"
+                                            ></span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <input
+                                            class="p-inputtext-sm"
+                                            type="text"
+                                            [(ngModel)]="datachild.name"
+                                            value=""
+                                            pInputText
+                                        />
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+
+                            <div class="p-col-3 rowexpansion_title">Grup</div>
+                            <div class="p-col-9">
+                                <p-inplace
+                                    [style]="{
+                                        height: '33px'
+                                    }"
+                                    [closable]="true"
+                                    [active]="!datachild.group_name"
+                                    (onDeactivate)="
+                                        putData({
+                                            id: datachild.userid,
+                                            code_group:
+                                                tempGroupChange.code_group,
+                                            group_id: tempGroupChange.GroupId
+                                        })
+                                    "
+                                    (onActivate)="
+                                        onGroupChange(datachild.group_id)
+                                    "
+                                    closeIcon="pi pi-check"
+                                >
+                                    <ng-template pTemplate="display">
+                                        <div
+                                            class="p-d-inline-flex p-ai-center"
+                                        >
+                                            <span class="p-mr-2">
+                                                {{
+                                                    datachild.group_name
+                                                        | titlecase
+                                                }}</span
+                                            >
+                                            <span
+                                                class="pi pi-pencil"
+                                                style="vertical-align: middle"
+                                            ></span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <p-dropdown
+                                            class="p-inputtext-sm"
+                                            appendTo="body"
+                                            [options]="
+                                                groupsStoreService.datasDropdown$
+                                                    | async
+                                            "
+                                            [autoDisplayFirst]="false"
+                                            [(ngModel)]="tempGroupChange"
+                                            optionLabel="nama_group"
+                                        ></p-dropdown>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+
+                            <div class="p-col-3 rowexpansion_title">Email</div>
+                            <div class="p-col-9">
+                                <p-inplace
+                                    [style]="{
+                                        height: '33px'
+                                    }"
+                                    [closable]="true"
+                                    [active]="!datachild.group_name"
+                                    closeIcon="pi pi-check"
+                                    (onDeactivate)="
+                                        putData({
+                                            id: datachild.userid,
+                                            email: datachild.email
+                                        })
+                                    "
+                                >
+                                    <ng-template pTemplate="display">
+                                        <div
+                                            class="p-d-inline-flex p-ai-center"
+                                        >
+                                            <span class="p-mr-2">
+                                                {{
+                                                    datachild.email || "tambah"
+                                                }}</span
+                                            >
+                                            <span
+                                                [class]="
+                                                    !datachild.email
+                                                        ? 'pi pi-plus'
+                                                        : 'pi pi-pencil'
+                                                "
+                                                style="vertical-align: middle"
+                                            ></span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <input
+                                            class="p-inputtext-sm"
+                                            type="text"
+                                            [(ngModel)]="datachild.email"
+                                            value=""
+                                            pInputText
+                                        />
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+
+                            <div class="p-col-3 rowexpansion_title">
+                                Nomor Ponsel
+                            </div>
+                            <div class="p-col-9">
+                                <p-inplace
+                                    [closable]="true"
+                                    [active]="!datachild.phone"
+                                    closeIcon="pi pi-check"
+                                    [style]="{
+                                        height: '33px'
+                                    }"
+                                    (onDeactivate)="
+                                        putData({
+                                            id: datachild.userid,
+                                            phone: datachild.phone
+                                        })
+                                    "
+                                >
+                                    <ng-template pTemplate="display">
+                                        <div
+                                            class="p-d-inline-flex p-ai-center"
+                                        >
+                                            <span class="p-mr-2">
+                                                {{
+                                                    datachild.phone || "tambah"
+                                                }}</span
+                                            >
+                                            <span
+                                                class="pi pi-pencil"
+                                                style="vertical-align: middle"
+                                            ></span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <p-inputMask
+                                            class="p-inputtext-sm"
+                                            mask="0999 999?-999-999"
+                                            [(ngModel)]="datachild.phone"
+                                            placeholder="0813 394-XXX-XXX"
+                                            [unmask]="true"
+                                        ></p-inputMask>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12 p-md-5">
+                        <div class="p-grid p-fluid p-jc-between p-ai-center">
+                            <div class="p-col-3 rowexpansion_title">
+                                Nama Pegawai
+                            </div>
+                            <div class="p-col-9">
+                                <p-inplace
+                                    [style]="{
+                                        height: '33px'
+                                    }"
+                                    [closable]="true"
+                                    [active]="!datachild.pegawai_nip"
+                                    (onDeactivate)="
+                                        putData({
+                                            id: datachild.userid,
+                                            pegawai_id:
+                                                datachild.selected_pegawai
+                                                    .PetugasID
+                                        })
+                                    "
+                                    (onActivate)="
+                                        onPegawaiChange(
+                                            datachild.pegawai_nip,
+                                            datachild.userid
+                                        )
+                                    "
+                                    closeIcon="pi pi-check"
+                                >
+                                    <ng-template pTemplate="display">
+                                        <div
+                                            class="p-d-inline-flex p-ai-center"
+                                        >
+                                            <span class="p-mr-2">
+                                                {{
+                                                    datachild.pegawai_nama
+                                                        | titlecase
+                                                }}</span
+                                            >
+                                            <span
+                                                class="pi pi-pencil"
+                                                style="vertical-align: middle"
+                                            ></span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <p-dropdown
+                                            appendTo="body"
+                                            class="p-inputtext-sm"
+                                            [options]="optPegawai"
+                                            [autoDisplayFirst]="false"
+                                            [(ngModel)]="
+                                                datachild.selected_pegawai
+                                            "
+                                            (onChange)="
+                                                datachild.pegawai_nip =
+                                                    datachild.selected_pegawai[
+                                                        'NIP'
+                                                    ]
+                                            "
+                                            optionLabel="Nama"
+                                        ></p-dropdown>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+                            <div class="p-col-3 rowexpansion_title">NIP</div>
+                            <div class="p-col-9 p-pl-4">
+                                {{ datachild.pegawai_nip }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12 p-md-5">
+                        <div class="p-grid p-fluid p-jc-between p-ai-center">
+                            <div class="p-col-3 rowexpansion_title">
+                                Nama Pemungut
+                            </div>
+                            <div class="p-col-9">
+                                <p-inplace
+                                    [style]="{
+                                        height: '33px'
+                                    }"
+                                    [closable]="true"
+                                    [active]="!datachild.wapu_id"
+                                    (onDeactivate)="
+                                        putData({
+                                            id: datachild.userid,
+                                            wapu_id:
+                                                datachild.selected_wapu
+                                                    .WapuID
+                                        })
+                                    "
+                                    (onActivate)="
+                                        onWapuChange(
+                                            datachild.wapu_id,
+                                            datachild.userid
+                                        )
+                                    "
+                                    closeIcon="pi pi-check"
+                                >
+                                    <ng-template pTemplate="display">
+                                        <div
+                                            class="p-d-inline-flex p-ai-center"
+                                        >
+                                            <span class="p-mr-2">
+                                                {{
+                                                    datachild.wapu_nama
+                                                        | titlecase
+                                                }}</span
+                                            >
+                                            <span
+                                                class="pi pi-pencil"
+                                                style="vertical-align: middle"
+                                            ></span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <p-dropdown
+                                            appendTo="body"
+                                            class="p-inputtext-sm"
+                                            [options]="optWapu"
+                                            [autoDisplayFirst]="false"
+                                            [(ngModel)]="
+                                                datachild.selected_wapu
+                                            "
+                                            (onChange)="
+                                                datachild.wapu_id =
+                                                    datachild.selected_wapu[
+                                                        'WapuID'
+                                                    ]
+                                            "
+                                            optionLabel="NamaBadan"
+                                        ></p-dropdown>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+                            <div class="p-col-3 rowexpansion_title">WapuID</div>
+                            <div class="p-col-9 p-pl-4">
+                                {{ datachild.wapu_id }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- ADD-IMG DIALOG-->
+<p-dialog
+    [baseZIndex]="2"
+    position="center"
+    [(visible)]="dialogImg"
+    header="Sesuaikan Foto"
+    [modal]="true"
+    [maximizable]="false"
+    [draggable]="false"
+    [responsive]="false"
+    [style]="{ width: '50vw' }"
+>
+    <ng-template pTemplate="content">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <image-cropper
+                    [imageChangedEvent]="imageChangedEvent"
+                    [maintainAspectRatio]="true"
+                    [containWithinAspectRatio]="false"
+                    [aspectRatio]="4 / 4"
+                    format="png"
+                    [onlyScaleDown]="true"
+                    resizeToWidth="200"
+                    resizeToHeigth="200"
+                    cropperMinWidth="200"
+                    [roundCropper]="true"
+                    (imageCropped)="imageCroppedAdd($event)"
+                    (loadImageFailed)="loadImageFailed()"
+                ></image-cropper>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button
+            *ngIf="!showDialog"
+            pButton
+            pRipple
+            label="Selesai"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="
+                putData({
+                    id: tempImgChange,
+                    avatar: croppedImage
+                });
+                dialogImg = false
+            "
+        ></button>
+        <button
+            *ngIf="showDialog"
+            pButton
+            pRipple
+            label="Selesai"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="dialogImg = false"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+<!-- ADD-EDIT DIALOG-->
+<p-dialog
+    [baseZIndex]="2"
+    [position]="isMobile ? 'bottom' : 'center'"
+    [blockScroll]="true"
+    (onShow)="showDialogMaximized($event, dialDetail)"
+    #dialDetail
+    [(visible)]="showDialog"
+    [modal]="true"
+    [maximizable]="true"
+    [draggable]="true"
+    styleClass="p-fluid mydialog"
+    [responsive]="true"
+>
+    <p-header>
+        <h3>Pengguna Baru Aplikasi</h3>
+    </p-header>
+    <div class="p-grid p-ai-center p-mt-4">
+        <div class="p-field p-col-12 p-md-2 p-text-center p-mt-2 p-mt-md-0">
+            <span class="p-float-label">
+                <div *ngIf="!addEditFields.avatar" class="upload-btn-wrapper">
+                    <img
+                        *ngIf="!addEditFields.avatar"
+                        src="assets/layout/images/placeholder.png"
+                    />
+                    <img
+                        class="p-shadow-3"
+                        *ngIf="addEditFields.avatar"
+                        [src]="addEditFields.avatar"
+                    />
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Ganti"
+                        *ngIf="addEditFields.avatar"
+                        (click)="uploader.click()"
+                        class="upload-btn p-button-sm"
+                    ></button>
+                    <input
+                        #uploader
+                        (change)="fileChangeEvent($event, addEditFields.userid)"
+                        type="file"
+                        name="myfile"
+                    />
+                </div>
+
+                <div *ngIf="addEditFields.avatar" class="upload-btn-wrapper">
+                    <img class="p-shadow-2" [src]="addEditFields.avatar" />
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Ganti"
+                        *ngIf="addEditFields.avatar"
+                        (click)="uploader.click()"
+                        class="upload-btn p-button-sm"
+                    ></button>
+                    <input
+                        (change)="fileChangeEvent($event, addEditFields.userid)"
+                        type="file"
+                        name="myfile2"
+                    />
+                </div>
+                <label class="pendaftaran_img_label">Foto Profil</label>
+            </span>
+        </div>
+
+        <div class="p-col-12 p-md-10">
+            <div class="p-grid p-formgrid p-ai-center">
+                <div class="p-field p-col-12 p-md-3">
+                    <span class="p-float-label">
+                        <input
+                            name="userid"
+                            required
+                            pInputText
+                            type="text"
+                            [(ngModel)]="addEditFields.userid"
+                        />
+                        <label>User Id*</label>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !addEditFields.userid"
+                            >*wajib diisi.</small
+                        >
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-5">
+                    <span class="p-float-label">
+                        <input
+                            name="firstname"
+                            required
+                            pInputText
+                            class="p-text-bold"
+                            type="text"
+                            [(ngModel)]="addEditFields.name"
+                        />
+                        <label>Nama Pengguna*</label>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !addEditFields.name"
+                            >*wajib diisi.</small
+                        >
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-4">
+                    <span class="p-float-label">
+                        <input
+                            name="email"
+                            required
+                            pInputText
+                            type="email"
+                            [(ngModel)]="addEditFields.email"
+                        />
+                        <label>Email*</label>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !addEditFields.email"
+                            >*wajib diisi.</small
+                        >
+                    </span>
+                </div>
+                <div class="p-field p-col-12 p-md-3">
+                    <span class="p-float-label">
+                        <p-inputMask
+                            mask="0999 999?-999-999"
+                            [(ngModel)]="addEditFields.phone"
+                            [unmask]="true"
+                        ></p-inputMask>
+                        <label>Nomor Ponsel / Whatsapp</label>
+                    </span>
+                </div>
+                <div class="p-field p-col-12 p-md-3">
+                    <span class="p-float-label">
+                        <input
+                            name="password"
+                            required
+                            pInputText
+                            type="password"
+                            [(ngModel)]="addEditFields.password"
+                        />
+                        <label>Kata Sandi*</label>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !addEditFields.password"
+                            >*wajib diisi.</small
+                        >
+                    </span>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            required
+                            [options]="
+                                groupsStoreService.datasDropdown$ | async
+                            "
+                            [autoDisplayFirst]="false"
+                            [(ngModel)]="tempGroupChange"
+                            appendTo="body"
+                            optionLabel="nama_group"
+                            (onChange)="
+                                addEditFields.groupid =
+                                    tempGroupChange['GroupId'];
+                                addEditFields.groupcode =
+                                    tempGroupChange['code_group']
+                            "
+                        ></p-dropdown>
+                        <label>Grup*</label>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !addEditFields.phone"
+                            >*wajib diisi.</small
+                        >
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-12">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="optPegawai"
+                            appendTo="body"
+                            [autoDisplayFirst]="false"
+                            [(ngModel)]="optPegawaiSelected"
+                            (onChange)="
+                                addEditFields.pegawai_nip =
+                                    optPegawaiSelected['NIP']
+                            "
+                            optionLabel="Nama"
+                        ></p-dropdown>
+                        <label>Pegawai</label>
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-12">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="optWapu"
+                            appendTo="body"
+                            [autoDisplayFirst]="false"
+                            [(ngModel)]="optWapuSelected"
+                            (onChange)="
+                                addEditFields.wapu_id =
+                                    optWapuSelected['WapuID']
+                            "
+                            optionLabel="NamaBadan"
+                        ></p-dropdown>
+                        <label>Nama Pemungut</label>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <button
+            pButton
+            pRipple
+            label="Batal"
+            icon="pi pi-times"
+            style="color: #9e9d9e"
+            class="p-button-text"
+            (click)="hideDialog()"
+        ></button>
+        <button
+            [disabled]="
+                !addEditFields.userid ||
+                !addEditFields.name ||
+                !addEditFields.password ||
+                !addEditFields.email ||
+                !addEditFields.groupid
+            "
+            pButton
+            pRipple
+            label="Simpan"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="postData()"
+        ></button>
+    </p-footer>
+</p-dialog>
+
+<p-blockUI
+    [autoZIndex]="true"
+    styleClass="overlay-load dark-panel"
+    [blocked]="isLoading"
+>
+    <img
+        style="margin-bottom: 160px"
+        src="assets/layout/images/logo.png"
+        width="160"
+    />
+</p-blockUI>
+<p-progressSpinner
+    [style]="{
+        position: 'fixed',
+        width: '60px',
+        height: '60px',
+        top: '50%',
+        left: '50%',
+        'margin-top': '-40px',
+        'margin-left': '-40px',
+        'z-index': '1000000'
+    }"
+    strokeWidth="8"
+    animationDuration=".8s"
+    *ngIf="isLoading"
+></p-progressSpinner>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

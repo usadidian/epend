@@ -1,0 +1,869 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+
+        <!-- DATATABLE -->
+        <div class="card">
+            <h3 style="font-weight: 400">
+                Daftar Potensi
+                <span style="color: #949ba2; font-weight: 600">Pajak</span>
+            </h3>
+            <p>Daftar Potensi Pendapatan.</p>
+
+            <p-table
+                #dt
+                stateKey="daftarpotensi"
+                [lazy]="true"
+                [totalRecords]="totalRecords"
+                (onLazyLoad)="loadDataLazy($event)"
+                [value]="datas"
+                [rowHover]="true"
+                dataKey="PotID"
+                [rowTrackBy]="trackByFunction"
+                [loading]="isLoadingDt"
+                [showLoader]="false"
+                styleClass="p-datatable-responsive-demo p-datatable-sm"
+                [paginator]="true"
+                [rows]="isMobile ? 50 : 10"
+                [rowsPerPageOptions]="[10, 25, 50]"
+                [pageLinks]="isMobile ? 2 : 5"
+                [showCurrentPageReport]="!isMobile ? true : false"
+                alwaysShowPaginator="false"
+                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} Rows per page: {RowsPerPageDropdown}"
+                currentPageReportTemplate="Menampilkan {first} sampai {last} dari {totalRecords} data"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="p-grid p-ai-center vertical-container p-fluid p-mt-2"
+                    >
+                        <!-- <div class="p-col p-mb-2 p-mb-md-0">
+                            <button
+                                pButton
+                                pRipple
+                                label="Potensi Baru"
+                                icon="pi pi-plus"
+                                class="p-button-outlined p-mr-2"
+                                (click)="addDialog()"
+                            ></button>
+                        </div>
+                        <div class="p-col-12 p-md-6">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [filter]="true"
+                                    emptyFilterMessage="Tidak ditemukan"
+                                    [options]="optWilayahUpt"
+                                    [(ngModel)]="optWilayahUptSelected"
+                                    [showClear]="true"
+                                    (onClear)="
+                                        dt.filter(null, 'filter_upt', 'EQUALS')
+                                    "
+                                    [autoDisplayFirst]="false"
+                                    (onChange)="
+                                        dt.filter(
+                                            $event.value,
+                                            'filter_upt',
+                                            'EQUALS'
+                                        )
+                                    "
+                                    optionLabel="UPT"
+                                >
+                                </p-dropdown>
+                                <label>Wilayah / UPT</label>
+                            </span>
+                        </div> -->
+                        <div class="p-col-12 p-md-4">
+                            <div class="p-inputgroup">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        [(ngModel)]="searchQuery"
+                                        type="text"
+                                        (input)="
+                                            dt.filterGlobal(
+                                                $event.target.value,
+                                                'contains'
+                                            )
+                                        "
+                                    />
+                                    <label>Cari daftar potensi...</label>
+                                </span>
+                                <span class="p-inputgroup-addon">
+                                    <i class="pi pi-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 8rem" pSortableColumn="PotID">
+                            Kode<p-sortIcon field="PotID"></p-sortIcon>
+                        </th>
+                        <th
+                            style="width: 20rem"
+                            pSortableColumn="NamaBadan"
+                        >
+                            Nama Perusahaan<p-sortIcon field="NamaBadan">
+                            </p-sortIcon>
+                        </th>
+                        <th style="width: 15rem" pSortableColumn="GrupUsaha">
+                            Bidang<p-sortIcon field="GrupUsaha">
+                            </p-sortIcon>
+                        </th>
+                        <th  pSortableColumn="TglPendaftaran">
+                            Tanggal Daftar<p-sortIcon
+                                field="TglPendaftaran"
+                            ></p-sortIcon>
+                        </th>
+                        <!-- <th pSortableColumn="JmlPot">
+                            Jumlah<p-sortIcon field="JmlPot"></p-sortIcon>
+                        </th> -->
+                        <th pSortableColumn="JmlPotThn">
+                            Jumlah Potensi per Tahun<p-sortIcon field="JmlPotThn"></p-sortIcon>
+                        </th>
+                        <th style="width: 15rem"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="loadingbody">
+                    <tr *ngFor="let col of [1, 2, 3, 4, 5, 6]">
+                        <td *ngFor="let col of [1, 2, 3, 4, 5]">
+                            <ngx-skeleton-loader
+                                count="1"
+                                appearance="line"
+                            ></ngx-skeleton-loader>
+                        </td>
+                        <td style="text-align: right">
+                            <ngx-skeleton-loader
+                                count="4"
+                                appearance="circle"
+                            ></ngx-skeleton-loader>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-data>
+                    <tr *ngIf="!isLoadingDt">
+                        <td>
+                            <div class="p-column-title">Kode</div>
+                            <div>
+                                {{ data.PotID }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="p-column-title">Dinas Penghasil</div>
+                            <div>
+                                {{ data.NamaBadan }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="p-column-title">Jenis Transaksi</div>
+                            <div>
+                                {{ data.GrupUsaha }}
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <div class="p-column-title">Tanggal Daftar</div>
+                            <div>
+                                {{ data.TglPendaftaran | date: "dd MMM yyyy" }}
+                            </div>
+                        </td>
+                        <!-- <td>
+                            <div class="p-column-title">JmlPot</div>
+                            <div>
+                                {{
+                                    data.JmlPot
+                                        | currency: "IDR":"Rp ":"0.0"
+                                }}
+                            </div>
+                        </td> -->
+                        <td>
+                            <div class="p-column-title">JmlPotThn</div>
+                            <div>
+                                {{
+                                    data.JmlPotThn
+                                        | currency: "IDR":"Rp ":"0.0"
+                                }}
+                            </div>
+                        </td>
+                        <td style="text-align: right">
+                            <!-- <button
+                                pTooltip="Ubah"
+                                tooltipPosition="left"
+                                styleClass="p-button-sm"
+                                label=""
+                                pButton
+                                pRipple
+                                icon="pi pi-pencil"
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                                (click)="editDialog(data)"
+                            ></button> -->
+                            <button
+                                icon="fa"
+                                pTooltip="Detail"
+                                (click)="showHistory(data)"
+                                tooltipPosition="left"
+                                styleClass="p-button-sm"
+                                pButton
+                                pRipple
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                            >
+                                <i
+                                    class="material-icons material-icons-outlined"
+                                    >toc</i
+                                >
+                            </button>
+                            <!-- <button
+                                (click)="printDialog(data)"
+                                icon="pi pi-print"
+                                pTooltip="Cetak"
+                                tooltipPosition="left"
+                                styleClass="p-button-sm"
+                                pButton
+                                pRipple
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                            ></button> -->
+                            <!-- <button
+                                styleClass="p-button-sm"
+                                pButton
+                                pRipple
+                                pTooltip="Ubah Dta"
+                                icon="pi pi-pencil"
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                                (click)="
+                                    editData(data)
+                                "
+                            ></button> -->
+                            <!-- <button
+                                (click)="deleteData(data)"
+                                icon="pi pi-trash"
+                                pTooltip="Hapus"
+                                tooltipPosition="left"
+                                styleClass="p-button-sm"
+                                pButton
+                                pRipple
+                                class="p-button-rounded p-button-outlined p-button-danger p-mr-2"
+                            ></button> -->
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="6">
+                            <div class="p-grid p-ai-center p-jc-center">
+                                <div class="">
+                                    <img
+                                        style="width: 100%"
+                                        class=""
+                                        src="assets/layout/images/empty.png"
+                                        alt=""
+                                    />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <!-- ADD-EDIT DIALOG-->
+        <p-dialog
+            [blockScroll]="true"
+            header="{{ modalTitle }}"
+            (onShow)="showDialogMaximized($event, dialDetail)"
+            #dialDetail
+            [(visible)]="dataDialog"
+            [modal]="true"
+            [maximizable]="true"
+            [draggable]="true"
+            styleClass="p-fluid mydialog"
+            [responsive]="true"
+        >
+            <div class="p-formgrid p-grid p-mt-4">
+                <div class="p-field p-col-12 p-md-4">
+                    <span class="p-float-label">
+                        <input
+                            [disabled]="statEditAdd === 'print'"
+                            [autofocus]="statEditAdd === 'add'"
+                            required
+                            pInputText
+                            class="p-text-bold"
+                            type="text"
+                            [(ngModel)]="addEditFields.PotID"
+                            (keyup)="validate()"
+                        />
+                        <label>Kode*</label>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !addEditFields.PotID"
+                            >*wajib diisi.</small
+                        >
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-3 p-mt-3 p-mt-md-0 p-mb-md-0">
+                    <label>Jenis Transaksi</label>
+                    <span class="p-formgroup-inline">
+                        <div class="p-field-radiobutton">
+                            <p-radioButton
+                                [disabled]="statEditAdd !== 'add'"
+                                name="GrupUsaha"
+                                value="2"
+                                (onClick)="
+                                    changeDropdownGrupUsaha(); validate()
+                                "
+                                [(ngModel)]="addEditFields.GrupUsaha"
+                                inputId="GrupUsaha1"
+                            ></p-radioButton>
+                            <label for="GrupUsaha1">BPKD ke KASDA</label>
+                        </div>
+                        <div class="p-field-radiobutton">
+                            <p-radioButton
+                                [disabled]="statEditAdd !== 'add'"
+                                name="GrupUsaha"
+                                value="3"
+                                (onClick)="
+                                    changeDropdownGrupUsaha(); validate()
+                                "
+                                [(ngModel)]="addEditFields.GrupUsaha"
+                                inputId="GrupUsaha2"
+                            ></p-radioButton>
+                            <label for="GrupUsaha2">SKPD ke KASDA</label>
+                        </div>
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-5">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            appendTo="body"
+                            [disabled]="
+                                addEditFields.GrupUsaha !== '3' ||
+                                statEditAdd === 'edit'
+                            "
+                            [options]="optWilayahUptAdd"
+                            [autoDisplayFirst]="false"
+                            optionLabel="UPT"
+                            [(ngModel)]="optWilayahUptAddSelected"
+                            (onChange)="
+                                addEditFields.UPTID =
+                                    optWilayahUptAddSelected.UPTID;
+                                validate()
+                            "
+                            [showClear]="false"
+                        >
+                        </p-dropdown>
+                        <label>Dinas Penyetor</label>
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-4">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            appendTo="body"
+                            [disabled]="statEditAdd !== 'add'"
+                            [options]="optBendahara"
+                            [autoDisplayFirst]="false"
+                            optionLabel="Nama"
+                            [(ngModel)]="optBendaharaSelected"
+                            (onChange)="
+                                addEditFields.BendaharaID =
+                                    optBendaharaSelected.Kode;
+                                validate()
+                            "
+                            [showClear]="false"
+                        >
+                        </p-dropdown>
+                        <label>Bendahara Penyetor*</label>
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-3">
+                    <span class="p-float-label">
+                        <p-calendar
+                            required
+                            [disabled]="statEditAdd === 'print'"
+                            [readonlyInput]="true"
+                            (onSelect)="validate()"
+                            (onClearClick)="validate()"
+                            dateFormat="dd-mm-yy"
+                            [locale]="id"
+                            [(ngModel)]="addEditFields.TglPendaftaran"
+                            [showIcon]="true"
+                            [showButtonBar]="false"
+                            appendTo="body"
+                        ></p-calendar>
+                        <label>Tanggal STS*</label>
+                    </span>
+                    <small
+                        class="p-invalid"
+                        *ngIf="submitted && !addEditFields.TglPendaftaran"
+                        >*wajib diisi.</small
+                    >
+                </div>
+
+                <div class="p-field p-col-12 p-md-5">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            appendTo="body"
+                            [disabled]="statEditAdd !== 'add'"
+                            [options]="optStatusSetor"
+                            [autoDisplayFirst]="false"
+                            optionLabel="LabelStatus"
+                            [(ngModel)]="optStatusSetorSelected"
+                            (onChange)="
+                                addEditFields.KodeStatus =
+                                    optStatusSetorSelected.KodeStatus;
+                                validate()
+                            "
+                            [showClear]="false"
+                        >
+                        </p-dropdown>
+                        <label>Status Daftar Potensi*</label>
+                    </span>
+                </div>
+
+                <div class="p-field p-col-12 p-md-4">
+                    <span class="p-float-label">
+                        <textarea
+                            [disabled]="statEditAdd === 'print'"
+                            [(ngModel)]="addEditFields.Keterangan"
+                            type="text"
+                            rows="1"
+                            pInputTextarea
+                        ></textarea>
+                        <label>Keterangan*</label>
+                    </span>
+                </div>
+
+                <div
+                    *ngIf="
+                        statEditAdd === 'add' &&
+                        this.addEditFields.UPTID &&
+                        this.addEditFields.PotID &&
+                        this.addEditFields.TglPendaftaran &&
+                        this.addEditFields.BendaharaID &&
+                        this.addEditFields.KodeStatus &&
+                        this.addEditFields.Keterangan
+                    "
+                    class="p-field p-col-12 p-md-3"
+                >
+                    <p-toggleButton
+                        [(ngModel)]="optFromSKP"
+                        (onChange)="changeOptFromSKP()"
+                        onLabel="Setoran dari SKP / SPTP"
+                        offLabel="Setoran tanpa Penetapan"
+                        offIcon="pi pi-times"
+                        onIcon="pi pi-check"
+                        [style]="{ height: '2.7em', width: '100%' }"
+                    ></p-toggleButton>
+                </div>
+
+                <div
+                    *ngIf="
+                        !optFromSKP &&
+                        statEditAdd === 'add' &&
+                        this.addEditFields.UPTID &&
+                        this.addEditFields.PotID &&
+                        this.addEditFields.TglPendaftaran &&
+                        this.addEditFields.BendaharaID &&
+                        this.addEditFields.KodeStatus &&
+                        this.addEditFields.Keterangan
+                    "
+                    class="p-field p-col-12 p-md-5"
+                >
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [filter]="true"
+                            emptyFilterMessage="Objek Pajak tidak ditemukan"
+                            [options]="optJnsPend"
+                            [(ngModel)]="optJnsPendSelected"
+                            [showClear]="false"
+                            (onClear)="resetTable()"
+                            appendTo="body"
+                            [autoDisplayFirst]="false"
+                            (onChange)="
+                                selectedSkp[0].JenisPendapatanID =
+                                    optJnsPendSelected.JenisPendapatanID;
+                                validate()
+                            "
+                            optionLabel="NamaJenisPendapatan"
+                        ></p-dropdown>
+                        <label>Jenis Objek Pajak*</label>
+                    </span>
+                </div>
+
+                <div
+                    *ngIf="
+                        !optFromSKP &&
+                        statEditAdd === 'add' &&
+                        this.addEditFields.UPTID &&
+                        this.addEditFields.PotID &&
+                        this.addEditFields.TglPendaftaran &&
+                        this.addEditFields.BendaharaID &&
+                        this.addEditFields.KodeStatus &&
+                        this.addEditFields.Keterangan
+                    "
+                    class="p-col-12 p-md-4"
+                >
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">Rp</span>
+
+                        <span class="p-float-label">
+                            <p-inputNumber
+                                [style]="{
+                                    width: '100%',
+                                    'border-bottom-left-radius': '0',
+                                    'border-top-left-radius': '0'
+                                }"
+                                [(ngModel)]="selectedSkp[0].JmlBayar"
+                            >
+                            </p-inputNumber>
+                            <label>Jumlah Setoran*</label>
+                            <small
+                                class="p-invalid"
+                                *ngIf="submitted && !selectedSkp[0].JmlBayar"
+                                >*wajib diisi.</small
+                            >
+                        </span>
+                    </div>
+                </div>
+
+                <div *ngIf="optFromSKP" class="p-col-12 p-md-12">
+                    <app-daftarpotensi-modal
+                        (rowSelect)="rowSelectinChild($event)"
+                    ></app-daftarpotensi-modal>
+                    <!-- <p-table
+                        #dtLookup
+                        [value]="optSkpLookup"
+                        [paginator]="true"
+                        [rows]="5"
+                        [rowHover]="true"
+                        selectionMode="multiple"
+                        [loading]="loadingLookup"
+                        [showLoader]="false"
+                        [responsive]="false"
+                        [(selection)]="selectedSkp"
+                        dataKey="NoKohir"
+                        styleClass="p-datatable-sm"
+                        currentPageReportTemplate="Record Terpilih"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="SubKohir">
+                                    SKP/SPTP
+                                    <p-sortIcon field="SubKohir"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="NamaBadan">
+                                    Nama Usaha
+                                    <p-sortIcon field="NamaBadan"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="Jenis">
+                                    Jenis
+                                    <p-sortIcon field="Jenis"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="NamaJenisPendapatan">
+                                    Objek Pajak
+                                    <p-sortIcon
+                                        field="NamaJenisPendapatan"
+                                    ></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="TglBayar">
+                                    Tanggal Bayar
+                                    <p-sortIcon field="TglBayar"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="JmlBayar">
+                                    Jumlah
+                                    <p-sortIcon field="JmlBayar"></p-sortIcon>
+                                </th>
+                                <th style="width: 3rem"></th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        (input)="
+                                            dtLookup.filter(
+                                                $event.target.value,
+                                                'SubKohir',
+                                                'contains'
+                                            )
+                                        "
+                                        placeholder="Cari SKP/SPTP"
+                                        class="p-column-filter"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        (input)="
+                                            dtLookup.filter(
+                                                $event.target.value,
+                                                'NamaBadan',
+                                                'contains'
+                                            )
+                                        "
+                                        placeholder="Cari Nama Usaha"
+                                        class="p-column-filter"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        (input)="
+                                            dtLookup.filter(
+                                                $event.target.value,
+                                                'Jenis',
+                                                'contains'
+                                            )
+                                        "
+                                        placeholder="Cari Jenis"
+                                        class="p-column-filter"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        (input)="
+                                            dtLookup.filter(
+                                                $event.target.value,
+                                                'NamaJenisPendapatan',
+                                                'contains'
+                                            )
+                                        "
+                                        placeholder="Cari Objek Pajak"
+                                        class="p-column-filter"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        (input)="
+                                            dtLookup.filter(
+                                                $event.target.value,
+                                                'TglBayar',
+                                                'contains'
+                                            )
+                                        "
+                                        placeholder="Tanggal Bayar"
+                                        class="p-column-filter"
+                                    />
+                                </th>
+                                <th>
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        (input)="
+                                            dtLookup.filter(
+                                                $event.target.value,
+                                                'JmlBayar',
+                                                'contains'
+                                            )
+                                        "
+                                        placeholder="Cari Jumlah"
+                                        class="p-column-filter"
+                                    />
+                                </th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-data
+                            let-rowIndex="rowIndex"
+                        >
+                            <tr
+                                [pSelectableRow]="data"
+                                [pSelectableRowIndex]="rowIndex"
+                            >
+                                <td>{{ data.SubKohir }}</td>
+                                <td>{{ data.NamaBadan }}</td>
+                                <td>{{ data.Jenis }}</td>
+                                <td>{{ data.NamaJenisPendapatan }}</td>
+                                <td>
+                                    {{ data.TglBayar | date: "dd MMM yyyy" }}
+                                </td>
+                                <td class="p-text-right">
+                                    {{
+                                        data.JmlBayar
+                                            | currency: "IDR":"Rp ":"0.0"
+                                    }}
+                                </td>
+
+                                <td>
+                                    <p-tableCheckbox
+                                        [value]="data"
+                                    ></p-tableCheckbox>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table> -->
+                </div>
+
+                <div
+                    *ngIf="statEditAdd === 'print'"
+                    class="p-field p-col-12 p-md-6"
+                >
+                    <span class="p-float-label">
+                        <p-autoComplete
+                            appendTo="body"
+                            type="search"
+                            [suggestions]="optTtd"
+                            [forceSelection]="true"
+                            [dropdown]="true"
+                            [dropdownMode]="current"
+                            [completeOnFocus]="true"
+                            (completeMethod)="getDropdownTtd($event)"
+                            delay="600"
+                            field="Petugas"
+                            dataKey="PetugasID"
+                            [(ngModel)]="optTtdSelected"
+                        >
+                        </p-autoComplete>
+                        <label>Penandatangan</label>
+                    </span>
+                </div>
+
+                <!-- <div
+                    *ngIf="statEditAdd === 'print'"
+                    class="p-field p-col-12 p-md-3"
+                >
+                    <label>Jenis Laporan</label>
+                    <p-selectButton
+                        [options]="reportNameOpt"
+                        [(ngModel)]="reportName"
+                    >
+                        <ng-template let-item>
+                            {{ item.label }}
+                        </ng-template>
+                    </p-selectButton>
+                </div> -->
+
+                <div
+                    *ngIf="statEditAdd === 'print'"
+                    class="p-field p-col-12 p-md-3"
+                >
+                    <label>Format File Laporan</label>
+                    <p-selectButton
+                        [options]="reportTypeOpt"
+                        [(ngModel)]="reportType"
+                    >
+                        <ng-template let-item>
+                            <i class="{{ item.icon }}" aria-hidden="true"></i>
+                            {{ item.label }}
+                        </ng-template>
+                    </p-selectButton>
+                </div>
+            </div>
+
+            <p-footer>
+                <div class="p-grid p-ai-center p-jc-end vertical-container">
+                    <div class="p-col-12 p-md-8">
+                        <button
+                            pButton
+                            pRipple
+                            label="Batal"
+                            icon="pi pi-times"
+                            style="color: #9e9d9e"
+                            class="p-button-text"
+                            (click)="hideDialog()"
+                        ></button>
+                        <button
+                            *ngIf="statEditAdd === 'add'"
+                            [disabled]="
+                                !this.addEditFields.UPTID ||
+                                !this.addEditFields.PotID ||
+                                !this.addEditFields.TglPendaftaran ||
+                                !this.addEditFields.BendaharaID ||
+                                !this.addEditFields.KodeStatus ||
+                                !this.addEditFields.Keterangan ||
+                                !selectedSkp[0]?.JenisPendapatanID ||
+                                !selectedSkp[0]?.JmlBayar
+                            "
+                            pButton
+                            pRipple
+                            label="Simpan"
+                            icon="pi pi-check"
+                            class="p-button-text"
+                            (click)="saveData()"
+                        ></button>
+                        <button
+                            *ngIf="statEditAdd === 'edit'"
+                            [disabled]="!this.addEditFields.PotID"
+                            pButton
+                            pRipple
+                            label="Ubah"
+                            icon="pi pi-check"
+                            class="p-button-text"
+                            (click)="updateData()"
+                        ></button>
+                        <button
+                            *ngIf="statEditAdd === 'print'"
+                            [disabled]="!optTtdSelected"
+                            pButton
+                            pRipple
+                            label="Cetak Laporan"
+                            icon="pi pi-check"
+                            class="p-button-text"
+                            (click)="print()"
+                        ></button>
+                    </div>
+                </div>
+            </p-footer>
+        </p-dialog>
+
+        <p-sidebar
+            [style]="{
+                height: '70vh',
+                'border-top-left-radius': '25px',
+                'border-top-right-radius': '25px'
+            }"
+            [blockScroll]="true"
+            [(visible)]="showDetail"
+            [modal]="true"
+            position="bottom"
+        >
+            <!-- <app-daftarpotensi-detail  *ngIf="showDetail" [dataFromHead]="data"></app-daftarpotensi-detail> -->
+        </p-sidebar>
+
+        <p-blockUI
+            [autoZIndex]="true"
+            [styleClass]="
+                isLoadingModal ? 'overlay-load dark-panel' : 'dark-panel'
+            "
+            [blocked]="isLoading"
+        >
+            <!-- <i class="pi pi-lock" style="font-size: 3rem"></i> -->
+            <!-- <div style="font-size: 3rem">{{environment.appName}}</div> -->
+            <img
+                style="margin-bottom: 160px"
+                src="assets/layout/images/logo.png"
+                width="160"
+            />
+        </p-blockUI>
+        <p-progressSpinner
+            [style]="{
+                position: 'fixed',
+                width: '60px',
+                height: '60px',
+                top: '50%',
+                left: '50%',
+                'margin-top': '-40px',
+                'margin-left': '-40px',
+                'z-index': '1000000'
+            }"
+            strokeWidth="8"
+            animationDuration=".8s"
+            *ngIf="isLoading || isLoadingModal"
+        ></p-progressSpinner>
+
+        <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+    </div>
+</div>

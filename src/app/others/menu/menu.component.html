@@ -1,0 +1,807 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+
+        <!-- DATATABLE -->
+        <div class="card">
+            <h3 style="font-weight: 400">
+                Daftar Menu
+                <span style="color: #949ba2; font-weight: 600"></span>
+            </h3>
+            <!-- <p>Daftar Menu</p> -->
+            <div [innerHTML]="tempPrint"></div>
+
+            <p-table
+                #dt
+                stateKey="menu"
+                [lazy]="true"
+                [totalRecords]="totalRecords"
+                (onLazyLoad)="loadDataLazy($event)"
+                [value]="menuService.datas$ | async"
+                [columns]="cols"
+                [rows]="isMobile ? 50 : 10"
+                [globalFilterFields]="[
+                    'Kode',
+                    'Menu',
+                    'Url',
+                    'Tipe'
+                ]"
+                [loading]="isLoadingDt"
+                [showLoader]="false"
+                [rowHover]="true"
+                dataKey="UrlId"
+                styleClass="p-datatable-responsive-demo p-datatable-sm p-mt-5"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 25, 50]"
+                [pageLinks]="isMobile ? 2 : 5"
+                [showCurrentPageReport]="!isMobile ? true : false"
+                alwaysShowPaginator="false"
+                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} Rows per page: {RowsPerPageDropdown}"
+                currentPageReportTemplate="Menampilkan {first} sampai {last} dari {totalRecords} data"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="p-grid p-ai-center p-jc- vertical-container p-fluid"
+                    >
+                        <div class="p-col p-md-2 p-mb-2 p-mb-md-0">
+                            <button
+                                pButton
+                                pRipple
+                                label="Menu Baru"
+                                icon="pi pi-plus"
+                                class="p-button-outlined p-mr-2"
+                                (click)="openNew()"
+                            ></button>
+                        </div>
+                        <div class="p-col-12 p-md-1 p-text-right"></div>
+
+                        <div class="p-col-12 p-md-4">
+                            <div class="p-inputgroup">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        [(ngModel)]="searchQuery"
+                                        type="text"
+                                        (input)="
+                                            dt.filterGlobal(
+                                                $event.target.value,
+                                                'contains'
+                                            )
+                                        "
+                                    />
+                                    <label>Cari...</label>
+                                </span>
+                                <span class="p-inputgroup-addon">
+                                    <i class="pi pi-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 10rem" pSortableColumn="Kode">
+                            Kode<p-sortIcon field="Kode"></p-sortIcon>
+                        </th>
+                        <th style="width: 15rem" pSortableColumn="Menu">
+                            Nama Menu<p-sortIcon
+                                field="Menu"
+                            ></p-sortIcon>
+                        </th>
+                        <th style="width: 15rem" pSortableColumn="Url">
+                            Url<p-sortIcon
+                                field="Url"
+                            ></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Tipe">
+                            Tipe<p-sortIcon
+                                field="Tipe"
+                            ></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="loadingbody">
+                    <tr *ngFor="let col of [1, 2, 3, 4, 5, 6]">
+                        <td *ngFor="let col of [1, 2, 3]">
+                            <ngx-skeleton-loader
+                                count="1"
+                                appearance="line"
+data                            ></ngx-skeleton-loader>
+                        </td>
+                        <td style="text-align: right">
+                            <ngx-skeleton-loader
+                                count="4"
+                                appearance="circle"
+                            ></ngx-skeleton-loader>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template
+                    pTemplate="body"
+                    let-data
+                    let-rowIndex="rowIndex"
+                    let-expanded="expanded"
+                    let-editing="editing"
+                    let-ri="rowIndex"
+                >
+                    <!-- <tr
+                        *ngIf="!isLoadingDt"
+                        [pSelectableRow]="data"
+                        [pSelectableRowIndex]="rowIndex"
+                    > -->
+                
+                    <tr [pEditableRow]="data" *ngIf="!isLoadingDt">
+                        <td *ngIf="rowGroupMetadata[data.MenuId].size === 1">
+                            <div
+                                class="p-grid p-ai-center vertical-container p-pt-2"
+                            >
+                                <div class="p-col only-md">
+                                    {{ data.Kode }}
+                                    <span
+                                        class="p-tag p-tag-rounded p-tag-danger"
+                                        *ngIf="data?.badge"
+                                        >Baru</span
+                                    >
+                                </div>
+                                <div class="p-col only-xs">
+                                    <div class="p-grid">
+                                        <div class="p-col-12">
+                                            {{ data.Menu }}
+                                            <span
+                                                class="p-tag p-tag-rounded p-tag-danger"
+                                                *ngIf="data?.badge"
+                                                >Baru</span
+                                            >
+                                        </div>
+                                        <div class="p-col-12">
+                                            {{ data.Menu }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td
+                            class="p-column-only-md"
+                            *ngIf="rowGroupMetadata[data.MenuId].size > 1"
+                        >
+                            <div class="p-grid p-ai-center vertical-container">
+                                <div
+                                    class="p-col-fixed"
+                                    style="width: 40px"
+                                ></div>
+                                
+                                <div class="p-col">{{ data.Menu }}</div>
+                            </div>
+                        </td>
+                        <!-- <td class="p-column-only-md">
+                            <div class="p-column-title p-pl-md-0 p-pl-6">
+                                Menu
+                            </div>
+                            <div class="p-pl-md-0 p-pl-6">
+                                {{ data.Menu }}
+                            </div>
+                        </td> -->
+                        <td>
+                            <span class="p-column-title">Menu</span>
+                            <div>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            [style]="{
+                                                width: '100%'
+                                            }"
+                                            [(ngModel)]="data.Menu"
+                                        />
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{ data.Menu }}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="p-column-title p-pl-md-0 p-pl-6">
+                                Url
+                            </div>
+                            <div class="p-pl-md-0 p-pl-6">
+                                {{ data.Url }}
+                            </div>
+                        </td>
+                        <!-- <td>
+                            <div class="p-column-title p-pl-md-0 p-pl-6">
+                                Tipe
+                            </div>
+                            <div class="p-pl-md-0 p-pl-6">
+                                {{ data.Tipe }}
+                            </div>
+                        </td> -->
+                        <td>
+                            <span class="p-column-title">Tipe</span>
+                            <div>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            [style]="{
+                                                width: '100%'
+                                            }"
+                                            [(ngModel)]="data.Tipe"
+                                        />
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{ data.Tipe }}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </div>
+                        </td>
+                        <td style="text-align: right">
+                            <button
+                                pTooltip="Tambah Url"
+                                *ngIf="
+                                    rowGroupMetadata[data.MenuId].size === 1
+                                    && data.Tipe === 'D' 
+                                "
+                                styleClass="p-button-sm"
+                                label=""
+                                pButton
+                                pRipple
+                                icon="pi pi-plus"
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                                (click)="addProductDet(data)"
+                            ></button>
+                            <button
+                                pTooltip="Ubah data"
+                                *ngIf="!editing"
+                                pButton
+                                pRipple
+                                type="button"
+                                pInitEditableRow
+                                icon="pi pi-pencil"
+                                (click)="onRowEditInit(data)"
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                            ></button>
+                            <button
+                                pTooltip="Simpan"
+                                *ngIf="editing"
+                                pButton
+                                pRipple
+                                type="button"
+                                pSaveEditableRow
+                                icon="pi pi-check"
+                                (click)="onRowEditSave(data)"
+                                class="p-button-rounded p-button-text p-button-primary p-mr-2"
+                            ></button>
+                            <button
+                                pTooltip="Batal"
+                                *ngIf="editing"
+                                pButton
+                                pRipple
+                                type="button"
+                                pCancelEditableRow
+                                icon="pi pi-times"
+                                (click)="onRowEditCancel(data, ri)"
+                                class="p-button-rounded p-button-text p-button-danger p-mr-2"
+                            ></button>
+                            <button
+                                pTooltip="Hapus"
+                                tooltipPosition="left"
+                                pButton
+                                pRipple
+                                icon="pi pi-trash"
+                                class="p-button-rounded p-button-outlined p-button-danger"
+                                (click)="deleteData(data)"
+                            ></button>
+                        </td>
+                        <!-- <td style="text-align: right">
+                            <button
+                                pTooltip="Tambah Url"
+                                *ngIf="
+                                    rowGroupMetadata[data.MenuId].size === 1
+                                    && data.Tipe === 'D' 
+                                "
+                                styleClass="p-button-sm"
+                                label=""
+                                pButton
+                                pRipple
+                                icon="pi pi-plus"
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                                (click)="addProductDet(data)"
+                            ></button>
+                            <button
+                                pTooltip="Ubah"
+                                *ngIf="
+                                    rowGroupMetadata[data.MenuId].size === 1
+                                "
+                                pButton
+                                pRipple
+                                icon="pi pi-pencil"
+                                class="p-button-rounded p-button-outlined p-mr-2"
+                                (click)="editProduct(data)"
+                            ></button>
+                            <button
+                                *ngIf="rowGroupMetadata[data.MenuId].size == 1"
+                                pTooltip="Hapus data"
+                                pButton
+                                pRipple
+                                icon="pi pi-trash"
+                                class="p-button-rounded p-button-outlined p-button-danger p-mr-2"
+                                (click)="deleteProduct(data)"
+                            ></button>
+                        </td> -->
+                        
+                    </tr>
+                </ng-template>
+
+            </p-table>
+        </div>
+
+        <!-- ADD-EDIT DIALOG-->
+        <p-dialog
+            (onHide)="hideDialog()"
+            [baseZIndex]="2"
+            [position]="isMobile ? 'bottom' : 'center'"
+            [blockScroll]="true"
+            (onShow)="showDialogMaximized($event, dialDetail)"
+            #dialDetail
+            [(visible)]="productDialog"
+            [header]="
+                statEditAdd !== 'add'
+                    ? 'Ubah Menu'
+                    : 'Tambah Menu'
+            "
+            [modal]="true"
+            [maximizable]="isMobile ? false : true"
+            [draggable]="false"
+            styleClass="mydialog p-fluid "
+            [responsive]="true"
+        >
+            <ng-template pTemplate="content">
+                <!-- <p-steps
+                    *ngIf="statEditAdd !== 'edit_header'"
+                    [model]="steps_form"
+                    [readonly]="statEditAdd === 'add' ? true : false"
+                    [(activeIndex)]="activeIndex"
+                ></p-steps>
+
+                <p-steps
+                    *ngIf="statEditAdd === 'edit_header'"
+                    [model]="steps_form_header"
+                    [readonly]="statEditAdd === 'add' ? true : false"
+                    [(activeIndex)]="activeIndex"
+                ></p-steps> -->
+
+                <div
+                    *ngIf="activeIndex == 0"
+                    class="p-fluid p-formgrid p-grid p-ai-center"
+                >
+                    <div class="p-col-12">
+                        <h5 style="color: #707070" class="p-mt-3">
+                            <i class="pi pi-home" style="font-size: 1.3rem"></i>
+                            Menu Baru
+                        </h5>
+                    </div>
+
+                    <div class="p-field p-col-12 p-md-12 p-pl-0 p-mb-0">
+                        <div class="p-fluid p-formgrid p-grid p-ml-0">
+                            <div
+                                class="p-field p-col-12 p-md-3"
+                            >
+                                <span class="p-float-label">
+                                    <input
+                                        [disabled]="false"
+                                        pInputText
+                                        class="p-text-bold"
+                                        type="text"
+                                        [(ngModel)]="addEditFields.Kode"
+                                    />
+                                    <label>Kode</label>
+                                </span>
+                                <!-- <small
+                                    class="p-error p-invalid"
+                                    *ngIf="
+                                        submitted && !addEditFields.Kode
+                                    "
+                                    >*wajib diisi.</small
+                                > -->
+                            </div>
+
+                            <div
+                                [class]="
+                                    statEditAdd === 'edit' ||
+                                    statEditAdd === 'edit_header'
+                                        ? 'p-field p-col-12 p-md-4'
+                                        : 'p-field p-col-12 p-md-4'
+                                "
+                            >
+                                <span class="p-float-label">
+                                    <input
+                                        #inputMenu
+                                        [autofocus]="statEditAdd === 'add'"
+                                        pInputText
+                                        class="p-text-bold"
+                                        type="text"
+                                        [(ngModel)]="addEditFields.Menu"
+                                    />
+                                    <label>Menu</label>
+                                </span>
+                                <!-- <small
+                                    class="p-error p-invalid"
+                                    *ngIf="
+                                        submitted && !addEditFields.Menu
+                                    "
+                                    >*wajib diisi.</small
+                                > -->
+                            </div>
+
+                            <div
+                                [class]="
+                                    statEditAdd === 'edit' ||
+                                    statEditAdd === 'edit_header'
+                                        ? 'p-field p-col-12 p-md-2'
+                                        : 'p-field p-col-12 p-md-2'
+                                "
+                            >
+                                <span class="p-float-label">
+                                    <input
+                                        #inputMenu
+                                        [autofocus]="statEditAdd === 'add'"
+                                        pInputText
+                                        class="p-text-bold"
+                                        type="text"
+                                        [(ngModel)]="addEditFields.Tipe"
+                                    />
+                                    <label>Tipe</label>
+                                </span>
+                                <!-- <small
+                                    class="p-error p-invalid"
+                                    *ngIf="
+                                        submitted && !addEditFields.Tipe
+                                    "
+                                    >*wajib diisi.</small
+                                > -->
+                            </div>
+
+                            <div class="p-field p-col-3">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [filter]="true"
+                                        [disabled]="statEditAdd === 'add'? false : true"
+                                        required
+                                        [options]="statEditAdd === 'add'? optJenisAdd : optJenisEdit"
+                                        [(ngModel)]="addEditFields.UrlId"
+                                        appendTo="body"
+                                        [showClear]="true"
+                                        [autoDisplayFirst]="false"
+                                    ></p-dropdown>
+                                    <label>Url</label>
+                                </span>
+                                <!-- <small
+                                    class="p-error p-invalid"
+                                    *ngIf="submitted && !addEditFields.UrlId"
+                                    >*wajib diisi.</small
+                                > -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Batal"
+                    icon="pi pi-times"
+                    style="color: #9e9d9e"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+
+
+                <button
+                    pButton
+                    pRipple
+                    label="Simpan"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveProduct()"
+                ></button>
+
+                <!-- <button
+                    *ngIf="activeIndex == 0 "
+                    [disabled]="
+                        !addEditFields.PetugasPendaftar ||
+                        addEditFields.Kecamatan.length === 0
+                    "
+                    (click)="nextPage()"
+                    pButton
+                    pRipple
+                    label="Lanjut"
+                    icon="pi pi-arrow-right"
+                    class="p-button-text"
+                ></button> -->
+
+            </ng-template>
+        </p-dialog>
+
+        <!-- ADD-DETAIL DIALOG-->
+        <p-dialog
+            [baseZIndex]="2"
+            [position]="isMobile ? 'bottom' : 'center'"
+            [blockScroll]="true"
+            (onShow)="showDialogMaximized($event, dialDetail)"
+            #dialDetail
+            [(visible)]="productDialogDet"
+            [header]="modalDetTitle"
+            [modal]="true"
+            [maximizable]="isMobile ? false : true"
+            [draggable]="false"
+            styleClass="p-fluid"
+            [responsive]="false"
+        >
+            <ng-template pTemplate="content">
+                
+                <p-listbox
+                    [filter]="true"
+                    [showToggleAll]="false"
+                    [options]="optJenis"
+                    [(ngModel)]="addEditFields.UrlId"
+                    [multiple]="true"
+                    optionDisabled="disabled"
+                    [checkbox]="true"
+                ></p-listbox>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Batal"
+                    icon="pi pi-times"
+                    style="color: #9e9d9e"
+                    class="p-button-text"
+                    (click)="this.productDialogDet = false"
+                ></button>
+                <button
+                    [disabled]="
+                        !addEditFields.UrlId
+                    "
+                    pButton
+                    pRipple
+                    label="Simpan"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveProductDet()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- ADD-DETAIL 2 DIALOG-->
+        <p-dialog
+            [baseZIndex]="2"
+            [position]="isMobile ? 'bottom' : 'center'"
+            (onShow)="showDialogMaximized($event, dialDetail)"
+            #dialDetail
+            [(visible)]="productDialogDet2"
+            [header]="modalDetTitle"
+            [modal]="true"
+            [maximizable]="true"
+            [draggable]="true"
+            [style]="{ width: '70vw' }"
+            styleClass="p-fluid"
+            [responsive]="false"
+        >
+            <ng-template pTemplate="content">
+                <div class="p-fluid p-formgrid p-grid p-pt-2">
+                    <!-- <div class="p-col-12 p-mt-3">
+                     <h5 style="color:#707070;"><i class="pi pi-id-card" style="font-size: 1.3rem"></i> Pilih Url Untuk {{data['Menu']}}
+                     </h5>
+                 </div> -->
+                    <div class="p-field p-col-12">
+                        <label>Url</label>
+                        <p-autoComplete
+                            required
+                            type="search"
+                            [(ngModel)]="MenuSelected"
+                            [suggestions]="optMenu"
+                            [forceSelection]="true"
+                            [dropdown]="true"
+                            [dropdownMode]="current"
+                            (completeMethod)="getDropdownMenu($event)"
+                            placeholder="Cari Nama Usaha / NPWPD"
+                            delay="600"
+                            [completeOnFocus]="true"
+                            showEmptyMessage="true"
+                            emptyMessage="Tidak ditemukan"
+                            field="name"
+                            dataKey="MenuId"
+                        >
+                        </p-autoComplete>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !MenuSelected"
+                            >*wajib diisi.</small
+                        >
+                    </div>
+                    <div class="p-field p-col-12">
+                        <label>Pilih Url</label>
+                        <p-listbox
+                            [listStyle]="{ 'max-height': '250px' }"
+                            [showToggleAll]="false"
+                            [options]="optJenis"
+                            [(ngModel)]="addEditFields.UrlId"
+                            [multiple]="true"
+                            optionDisabled="disabled"
+                            [checkbox]="true"
+                        ></p-listbox>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Batal"
+                    icon="pi pi-times"
+                    style="color: #9e9d9e"
+                    class="p-button-text"
+                    (click)="this.productDialogDet = false"
+                ></button>
+                <button
+                    [disabled]="
+                        !addEditFields.UrlId ||
+                        addEditFields.UrlId.length === 0 ||
+                        !MenuSelected
+                    "
+                    pButton
+                    pRipple
+                    label="Simpan"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveProductDet()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- ADD-IMG DIALOG-->
+        <!-- <p-dialog
+            [baseZIndex]="2"
+            position="center"
+            (onShow)="showDialogMaximized($event, dialDetail)"
+            [(visible)]="dialogImg"
+            header="Sesuaikan Foto"
+            [modal]="true"
+            [maximizable]="false"
+            [draggable]="false"
+            [responsive]="false"
+            [style]="{ width: '50vw' }"
+        >
+            <ng-template pTemplate="content">
+                <div class="p-grid">
+                    <div class="p-col-12">
+                        <image-cropper
+                            [imageChangedEvent]="imageChangedEvent"
+                            [maintainAspectRatio]="true"
+                            [containWithinAspectRatio]="false"
+                            [aspectRatio]="4 / 4"
+                            format="png"
+                            [onlyScaleDown]="true"
+                            resizeToWidth="200"
+                            resizeToHeigth="200"
+                            cropperMinWidth="200"
+                            [roundCropper]="true"
+                            (imageCropped)="imageCropped($event)"
+                        ></image-cropper>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Selesai"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="dialogImg = false"
+                ></button>
+            </ng-template>
+        </p-dialog> -->
+
+        <p-blockUI
+            [styleClass]="isLoading ? 'overlay-load dark-panel' : ''"
+            [blocked]="isLoading || isLoadingModal"
+        >
+            <img
+                style="margin-bottom: 160px"
+                src="assets/layout/images/logo.png"
+                width="170"
+            />
+        </p-blockUI>
+
+        <p-progressSpinner
+            [style]="{
+                position: 'fixed',
+                width: '60px',
+                height: '60px',
+                top: '50%',
+                left: '50%',
+                'margin-top': '-40px',
+                'margin-left': '-40px',
+                'z-index': '1000000'
+            }"
+            strokeWidth="8"
+            animationDuration=".8s"
+            *ngIf="isLoading || isLoadingModal"
+        ></p-progressSpinner>
+
+        <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+
+        <p-dialog
+            showEffect="fade"
+            [(visible)]="dialogVisible"
+            header="New Location"
+            [style]="{ width: '300px' }"
+            >>
+            <div class="p-grid p-fluid" *ngIf="selectedPosition">
+                <div class="p-col-2"><label for="title">Label</label></div>
+                <div class="p-col-10">
+                    <input
+                        type="text"
+                        pInputText
+                        id="title"
+                        [(ngModel)]="markerTitle"
+                    />
+                </div>
+
+                <div class="p-col-2"><label for="lat">Lat</label></div>
+                <div class="p-col-10">
+                    <input
+                        id="lat"
+                        type="text"
+                        readonly
+                        pInputText
+                        [ngModel]="selectedPosition.lat()"
+                    />
+                </div>
+
+                <div class="p-col-2"><label for="lng">Lng</label></div>
+                <div class="p-col-10">
+                    <input
+                        id="lng"
+                        type="text"
+                        readonly
+                        pInputText
+                        [ngModel]="selectedPosition.lng()"
+                    />
+                </div>
+
+                <div class="p-col-2"><label for="drg">Drag</label></div>
+                <div class="p-col-10">
+                    <p-checkbox
+                        [(ngModel)]="draggable"
+                        binary="true"
+                        [style]="{ 'margin-top': '.25em' }"
+                    ></p-checkbox>
+                </div>
+            </div>
+            <ng-template pTemplate="footer">
+                <div>
+                    <button
+                        type="button"
+                        pButton
+                        label="Add Marker"
+                        icon="pi-plus"
+                        (click)="addMarker()"
+                    ></button>
+                </div>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

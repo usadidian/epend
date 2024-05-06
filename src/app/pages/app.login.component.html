@@ -1,0 +1,26 @@
+<div class="login-body">
+    <div class="card login-panel p-fluid">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <img src="assets/layout/images/logo-ultima.svg">
+            </div>
+            <div class="p-col-12">
+                <span class="p-float-label">
+                    <input type="text" pInputText id="username" [(ngModel)]="user.username">
+                    <label for="username">Username</label>
+                </span>
+            </div>
+            <div class="p-col-12">
+                <span class="p-float-label">
+                    <input type="password" pInputText id="password" [(ngModel)]="user.password">
+                    <label for="password">Password</label>
+                </span>
+            </div>
+            <div class="p-col-12">
+                <button pButton type="button" label="Sign In" style="width: 100%" icon="pi pi-user" (click)="login()"></button>
+                <button pButton type="button" label="Forgot Password" style="width: 100%" class="p-button-secondary"
+                        icon="pi pi-question-circle"></button>
+            </div>
+        </div>
+    </div>
+</div>

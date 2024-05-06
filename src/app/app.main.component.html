@@ -1,0 +1,108 @@
+<div class="layout-wrapper" (click)="onLayoutClick()">
+    <div
+        class="layout-container"
+        [ngClass]="{
+            'menu-layout-static': !isOverlay(),
+            'menu-layout-overlay': isOverlay(),
+            'layout-menu-overlay-active': overlayMenuActive,
+            'menu-layout-horizontal': isHorizontal(),
+            'menu-layout-slim': isSlim(),
+            'layout-menu-static-inactive': staticMenuDesktopInactive,
+            'layout-menu-static-active': staticMenuMobileActive,
+            'p-ripple-disabled': !ripple,
+            'p-input-filled': inputStyle === 'filled'
+        }"
+    >
+        <app-topbar></app-topbar>
+
+        <div
+            class="layout-menu"
+            id="sidebar"
+            [ngClass]="{ 'layout-menu-dark': darkMenu }"
+            (click)="onMenuClick($event)"
+        >
+            <app-inline-profile
+                *ngIf="profileMode == 'inline' && !isHorizontal()"
+            ></app-inline-profile>
+            <app-menu></app-menu>
+        </div>
+
+        <p-toast key="session_exp" closable="false" position="center"></p-toast>
+
+        <p-toast key="info"></p-toast>
+
+        <p-toast key="avatar_upload" closable="true"></p-toast>
+
+        <p-toast key="avatar_upload_success">
+            <ng-template let-message pTemplate="message">
+                <div class="p-grid p-ai-center vertical-container">
+                    <div class="p-col-fixed" style="width: 45px">
+                        <ngx-avatar
+                            initialsSize="3"
+                            size="40"
+                            src="{{ message.detail }}"
+                        >
+                        </ngx-avatar>
+                    </div>
+                    <div class="p-ml-2 p-col">
+                        <p>{{ message.summary }}</p>
+                    </div>
+                </div>
+            </ng-template>
+        </p-toast>
+
+        <p-toast key="new_reg_wp">
+            <ng-template let-message pTemplate="message">
+                <div class="p-grid p-ai-center vertical-container">
+                    <div class="p-col-12">
+                        <p>{{ message.detail }}</p>
+                        <div class="p-grid p-fluid">
+                            <div class="p-col-12">
+                                <button
+                                    type="button"
+                                    pButton
+                                    routerLink="/admin/pendaftaran/confirm"
+                                    icon="pi pi-check"
+                                    label="Konfirmasi disini"
+                                    class="p-button-primary p-mr-2"
+                                    (click)="messageService.clear()"
+                                ></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-toast>
+
+        <div class="layout-main">
+            <app-breadcrumb></app-breadcrumb>
+
+            <div class="layout-content">
+                <router-outlet></router-outlet>
+            </div>
+
+            <app-footer></app-footer>
+        </div>
+
+        <!-- /////BOTTOM-NAV_MOBILE -->
+        <p-tabMenu
+            styleClass="p-grid p-ai-stretch vertical-container p-d-md-none bottomNavBar"
+            [model]="bottomNavBaritems"
+            [activeItem]="bottomNavBaractiveItem"
+        >
+            <ng-template pTemplate="item" let-item let-i="index">
+                <div class="bottom-nav-item p-col p-text-center">
+                    <span class="material-icons color_blue">
+                        {{ item.icon }}</span
+                    >
+                </div>
+            </ng-template>
+        </p-tabMenu>
+
+        <app-rightpanel></app-rightpanel>
+        <app-config></app-config>
+        <app-helpdesk-btn></app-helpdesk-btn>
+        <app-chat-box *ngIf="userService.chatBoxActive"></app-chat-box>
+        <div class="layout-mask"></div>
+    </div>
+</div>

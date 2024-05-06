@@ -1,0 +1,273 @@
+<!-- <iframe
+    style="
+        position: absolute;
+        margin: 0;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        opacity: 0.1;
+    "
+    height="100vh"
+    width="100vh"
+    src="https://www.youtube.com/embed/EadgHlBoc3s?autoplay=1&mute=1&enablejsapi=1&loop=1&rel=0&controls=0&showinfo=0&autohide=1&modestbranding=1"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+>
+</iframe> -->
+<!-- &start=24&end=42 -->
+<div *ngIf="!isMobile" class="video-background">
+    <div class="video-foreground">
+        <iframe
+            src="https://www.youtube.com/embed/koPkElMab4U?autoplay=1&loop=1&rel=0&showinfo=0&iv_load_policy=3&playlist=koPkElMab4U&controls=0&enablejsapi=1&mute=1&autohide=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+        ></iframe>
+    </div>
+</div>
+
+<div class="login-body area">
+    <div
+        class="card card_login p-pb-0 login-panel p-fluid p-shadow-24 p-pl-1 p-pr-1"
+    >
+        <div class="p-grid p-fluid p-align-stretch vertical-container">
+            <div
+                class="p-d-none p-d-md-block p-col-12 p-md-7 login-left p-py-6"
+            >
+                <img
+                    style="width: -webkit-fill-available; padding-top: 10px"
+                    src="assets/layout/images/login_img.png"
+                />
+            </div>
+
+            <div class="p-col-12 p-md-5 login-right p-py-6">
+                <div
+                    class="p-grid p-formgrid p-fluid p-align-center vertical-container"
+                >
+                    <div class="p-lg-8 p-col-8 p-mb-3">
+                        <img
+                            class="usadi-logo-shadow"
+                            style="width: 70%"
+                            src="{{ environmentData.appDevelopByLogoPath }}"
+                        />
+                    </div>
+                    <div class="p-lg-4 p-col-4 p-mb-3">
+                        <img
+                            style="width: 40px"
+                            src="{{ environmentData.appCopyrightByLogoPath }}"
+                        />
+                        <p class="usadi-owner-text p-mt-1">
+                            {{ environmentData.appCopyrightBy }}
+                        </p>
+                    </div>
+                    <div class="p-col-12">
+                        <h6 class="p-mb-0" style="color: #555">
+                            Silahkan login menggunakan akun anda
+                        </h6>
+                        <div class="p-grid p-jc-center">
+                            <button
+                                pTooltip="Login menggunakan email"
+                                (click)="methodsClick('email')"
+                                tooltipPosition="bottom"
+                                pButton
+                                pRipple
+                                type="button"
+                                icon="pi"
+                                [ngClass]="
+                                    currentLoginMethod == 'email'
+                                        ? 'p-button-rounded p-mr-2 p-mt-4 p-mb-4'
+                                        : 'p-button-rounded p-button-outlined p-mr-2 p-mt-4 p-mb-4'
+                                "
+                            >
+                                <i
+                                    class="material-icons material-icons-outlined"
+                                    >alternate_email</i
+                                >
+                            </button>
+                            <button
+                                pTooltip="Login menggunakan userid"
+                                (click)="methodsClick('userid')"
+                                tooltipPosition="bottom"
+                                pButton
+                                pRipple
+                                type="button"
+                                icon="pi"
+                                [ngClass]="
+                                    currentLoginMethod == 'userid'
+                                        ? 'p-button-rounded p-mr-2 p-mt-4 p-mb-4'
+                                        : 'p-button-rounded p-button-outlined p-mr-2 p-mt-4 p-mb-4'
+                                "
+                            >
+                                <i
+                                    class="material-icons material-icons-outlined"
+                                    >person</i
+                                >
+                            </button>
+                            <button
+                                pTooltip="Login menggunakan nomor ponsel"
+                                (click)="methodsClick('phone')"
+                                tooltipPosition="bottom"
+                                pButton
+                                pRipple
+                                type="button"
+                                icon="pi"
+                                [ngClass]="
+                                    currentLoginMethod == 'phone'
+                                        ? 'p-button-rounded p-mr-2 p-mt-4 p-mb-4'
+                                        : 'p-button-rounded p-button-outlined p-mr-2 p-mt-4 p-mb-4'
+                                "
+                            >
+                                <i
+                                    class="material-icons material-icons-outlined"
+                                    >phone_iphone</i
+                                >
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12">
+                        <span class="p-float-label">
+                            <input
+                                type="text"
+                                pInputText
+                                id="username"
+                                [(ngModel)]="user.username"
+                                required
+                                autofocus
+                            />
+                            <label for="username"
+                                >login menggunakan
+                                {{ currentLoginMethod }}</label
+                            >
+                        </span>
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !user.username"
+                            >*userid wajib diisi.</small
+                        >
+                    </div>
+                    <div class="p-col-12">
+                        <span class="p-float-label">
+                            <input
+                                required
+                                type="password"
+                                pInputText
+                                id="password"
+                                [(ngModel)]="user.password"
+                            />
+                            <!-- <button (click)="onClick()">
+                                <i class="fa fa-eye" aria-hidden="true" *ngIf="!show"></i>
+                                <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="show"></i>
+                            </button> -->
+
+                            <label for="password">Password</label>
+                        </span>
+                        
+                        <small
+                            class="p-invalid"
+                            *ngIf="submitted && !user.password"
+                            >*password wajib diisi.</small
+                        >
+                    </div>
+                    <div class="p-col-12 p-mt-0">
+                        <button
+                            [disabled]="!validate()"
+                            class="loginBtn p-mb-1"
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi"
+                            label="Login"
+                            style="width: 100%; height: auto"
+                            (click)="login()"
+                        >
+                            <i class="material-icons material-icons-outlined"
+                                >login</i
+                            >
+                        </button>
+                    </div>
+                    <div class="p-col-12 p-mt-0">
+                        <a
+                            [routerLink]="['/forgot-pwd']"
+                            style="font-size: 13px; font-weight: 500"
+                            >Lupa Kata Sandi ?</a
+                        >
+                    </div>
+                    <div class="p-col-12">
+                        <p
+                            style="
+                                text-align: center;
+                                font-size: 10px;
+                                color: #999;
+                            "
+                        >
+                            {{ environmentData.appName }}
+                            {{ environmentData.appVersion }} <br />
+                            copyright ©
+                            {{ environmentData.appCopyrightBy }}
+                            {{ environmentData.appCopyrightYear }} 
+                            <!-- - Developed
+                            By -->
+                            <!-- <a
+                                href="{{ environmentData.appCopyrightWebsite }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >{{ environmentData.appDevelopBy }}</a
+                            > -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p-dialog
+                header="Login Gagal!"
+                [(visible)]="displayError"
+                modal="modal"
+                showEffect="fade"
+                [style]="{ width: '300px' }"
+            >
+                <div style="line-height: 1.5">
+                    Login gagal. mungkin username atau password yang anda
+                    masukan salah.
+                </div>
+                <ng-template pTemplate="footer">
+                    <p-button
+                        (click)="displayBasic2 = false"
+                        styleClass="p-button-text"
+                    ></p-button>
+                </ng-template>
+            </p-dialog>
+            <p-blockUI [blocked]="isLoading"></p-blockUI>
+            <p-progressSpinner
+                [style]="{
+                    position: 'fixed',
+                    width: '80px',
+                    height: '80px',
+                    top: '50%',
+                    left: '50%',
+                    'margin-top': '-40px',
+                    'margin-left': '-40px',
+                    'z-index': '1000000'
+                }"
+                strokeWidth="5"
+                animationDuration=".5s"
+                *ngIf="isLoading"
+            ></p-progressSpinner>
+        </div>
+    </div>
+
+    <ul *ngIf="isMobile" class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>

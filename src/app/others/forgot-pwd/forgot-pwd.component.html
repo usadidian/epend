@@ -1,0 +1,162 @@
+<div class="p-jc-center p-grid p-ai-center p-fluid vertical-container p-mr-0">
+    <div class="p-col-12 p-mb-6 p-p-0">
+        <div
+            class="p-jc-between area p-grid p-ai-center p-fluid vertical-container p-m-0"
+            style="height: 75px; background-color: var(--primary-color)"
+        >
+            <div class="p-col-4 p-text-center">
+                <img
+                    class="usadi-logo-shadow p-p-2 p-mt-1"
+                    style="height: 60px"
+                    src="/assets/layout/images/logo2x.png"
+                />
+            </div>
+            <div class="p-col-4 p-text-center">
+                <img
+                    class="usadi-logo-shadow p-text-right p-p-2"
+                    style="height: 46px"
+                    src="{{ environmentData.appCopyrightByLogoPath }}"
+                />
+                <p class="usadi-owner-text p-mt-1" style="color: #fff">
+                    {{ environmentData.appCopyrightBy }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <div
+            class="p-jc-center p-m-0 area p-grid p-ai-center p-fluid vertical-container"
+        >
+            <div
+                class="p-lg-4 p-col-10 card p-mt-6 card_login p-pb-0 login-panel p-fluid p-shadow-40"
+            >
+                <div class="p-grid p-fluid vertical-container">
+                    <div class="p-col-12 p-md-12 p-py-6">
+                        <div
+                            class="p-grid p-formgrid p-fluid p-ai-center vertical-container"
+                        >
+                            <div class="p-col-12">
+                                <h4 class="p-mb-0" style="color: #555">
+                                    Temukan Akun Anda
+                                </h4>
+                            </div>
+
+                            <div class="p-field p-col-12">
+                                <span class="p-float-label">
+                                    <input
+                                        type="email"
+                                        pInputText
+                                        id="username"
+                                        [(ngModel)]="user.username"
+                                        required
+                                        autofocus
+                                    />
+                                    <label for="username">Masukan Email</label>
+                                </span>
+                                <small
+                                    class="p-invalid"
+                                    *ngIf="
+                                        user.username?.length > 0 && !validate()
+                                    "
+                                    >*Email wajib diisi dan belum sesuai.</small
+                                >
+                            </div>
+                            <div class="p-col-6 p-px-3">
+                                <button
+                                    class="loginBtnCancel"
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    icon="pi"
+                                    label="Batal"
+                                    (click)="back()"
+                                >
+                                    <i
+                                        class="material-icons material-icons-outlined"
+                                        >arrow_back</i
+                                    >
+                                </button>
+                            </div>
+                            <div class="p-col-6 p-px-3">
+                                <button
+                                    [disabled]="!validate()"
+                                    class="loginBtn"
+                                    pButton
+                                    pRipple
+                                    required
+                                    type="button"
+                                    icon="pi"
+                                    label="Cari"
+                                    (click)="login()"
+                                >
+                                    <i
+                                        class="material-icons material-icons-outlined"
+                                        >person_search</i
+                                    >
+                                </button>
+                            </div>
+                            <div class="p-col-12">
+                                <p
+                                    style="
+                                        text-align: center;
+                                        font-size: 10px;
+                                        color: #999;
+                                    "
+                                >
+                                    {{ environmentData.appName }}
+                                    {{ environmentData.appVersion }} <br />
+                                    copyright ©
+                                    {{ environmentData.appCopyrightBy }}
+                                    {{ environmentData.appCopyrightYear }} 
+                                    <!-- - Developed
+                                    By -->
+                                    <!-- <a
+                                        href="{{ environmentData.appCopyrightWebsite }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >{{ environmentData.appDevelopBy }}</a
+                                    > -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p-dialog
+                        header="Tidak Ditemukan!"
+                        [(visible)]="displayError"
+                        modal="modal"
+                        showEffect="fade"
+                        [style]="{ width: '300px' }"
+                    >
+                        <div style="line-height: 1.5">
+                            Akun yang dicari belum terdaftar.
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <p-button
+                                (click)="displayBasic2 = false"
+                                styleClass="p-button-text"
+                            ></p-button>
+                        </ng-template>
+                    </p-dialog>
+                    <p-blockUI [blocked]="isLoading"></p-blockUI>
+                    <p-progressSpinner
+                        [style]="{
+                            position: 'fixed',
+                            width: '80px',
+                            height: '80px',
+                            top: '50%',
+                            left: '50%',
+                            'margin-top': '-40px',
+                            'margin-left': '-40px',
+                            'z-index': '1000000'
+                        }"
+                        strokeWidth="5"
+                        animationDuration=".5s"
+                        *ngIf="isLoading"
+                    ></p-progressSpinner>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

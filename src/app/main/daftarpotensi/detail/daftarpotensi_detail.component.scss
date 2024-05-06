@@ -1,0 +1,74 @@
+:host ::ng-deep {
+    .mydialog {
+        width: 50vw !important;
+    }
+
+    @media screen and (max-width: 40em) {
+        .mydialog {
+            width: 95vw !important;
+        }
+    }
+    .p-autocomplete-input {
+        width: 100% !important;
+    }
+
+    .float-delete {
+        position: fixed;
+        bottom: 65px;
+        right: 22px;
+    }
+
+    .p-autocomplete-input {
+        cursor: pointer !important;
+    }
+
+    .p-dropdown-item-group {
+        background-color: #efefef !important;
+        color: var(--primary-color) !important;
+        font-weight: 500 !important;
+    }
+
+    .p-togglebutton.p-button.p-highlight {
+        background: var(--primary-color) !important;
+        border-color: #e0e0e1 !important;
+        color: #ffffff !important;
+    }
+
+    .p-input-icon-left,
+    .p-input-icon-right {
+        width: 100% !important;
+    }
+
+    .p-input-icon-left > .p-inputtext {
+        width: 100% !important;
+    }
+
+    .p-togglebutton.p-button.p-highlight .p-button-icon-left,
+    .p-togglebutton.p-button.p-highlight .p-button-icon-right {
+        color: #ffffff !important;
+    }
+
+    .p-menu-overlay {
+        top: auto !important;
+        right: auto !important;
+        width: fit-content !important;
+    }
+
+    .p-sidebar-content {
+        padding-top: 14px !important;
+    }
+
+    .p-datatable-loading-overlay {
+        background: rgba(255, 255, 255, 1) !important;
+    }
+
+    @media screen and (max-width: 40em) {
+        .p-datatable.p-datatable-responsive-demo
+            .p-datatable-tbody
+            > tr
+            > td
+            .p-column-title {
+            display: block !important;
+        }
+    }
+}
